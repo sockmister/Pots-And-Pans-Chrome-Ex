@@ -1,0 +1,1 @@
+alert("recipe page visited!");

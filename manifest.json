@@ -1,0 +1,14 @@
+{
+
+  "name": "Pots and Pans",
+  "description": "Pots and Pans",
+  "manifest_version": 2,
+  "version": "0.1",
+  "content_scripts": [
+    {
+      "matches": ["http://recipe.rakuten.co.jp/recipe/*"],
+      "css": [],
+      "js": ["pots.js"]
+    }
+  ]
+}
