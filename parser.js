@@ -8,13 +8,15 @@ var cleaned = [];
 
 cleaned = cleaner(segs);
 
-alert(cleaned.length);
-alert(cleaned.join(" | "));  // 表示
+// alert(cleaned.length);
+// alert(cleaned.join(" | "));  // 表示
 
+console.log(cleaned.length);
+console.log(cleaned.join(" | "));
 
 
 }
-// Method to clean the data of unnecessary 
+// Method to clean the data of unnecessary
 // words and particles ")","(","、" etc...
 function cleaner(data){
 
