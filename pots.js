@@ -1,10 +1,14 @@
-var db = initDB(1);
-setTimeout(function () {
-	console.log(db);
-	insertEntry(db, "sdf", "https://www.google.com");		
-	console.log(getLinkByName("sdf"));
-	console.log(getLinkByName("test"));
-}, 1000);
+// constants
+DB_VERSION = 1;
+
+var db;
+initDB(DB_VERSION, function(dbHandler) {
+	db = dbHandler;
+	insertEntry(db, "anotherone", "https://www.facebook.com");
+	getLinkByName("https://www.facebook.com", function(result){
+		console.log(result);
+	});
+});
 
 howToStepImg = document.getElementsByClassName("howtoStep")[0];
 rows = howToStepImg.children[0];
