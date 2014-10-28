@@ -1,13 +1,9 @@
 // constants
-DB_VERSION = 1;
+DB_VERSION = 2;
 
 var db;
 initDB(DB_VERSION, function(dbHandler) {
 	db = dbHandler;
-	insertEntry(db, "anotherone", "https://www.facebook.com");
-	getLinkByName("https://www.facebook.com", function(result){
-		console.log(result);
-	});
 });
 
 howToStepImg = document.getElementsByClassName("howtoStep")[0];

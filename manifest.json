@@ -10,5 +10,8 @@
       "css": [],
       "js": ["tiny_segmenter-0.2.js", "db.js", "parser.js", "pots.js"]
     }
+  ],
+  "web_accessible_resources": [
+    "seed.json"
   ]
 }

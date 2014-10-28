@@ -14,10 +14,13 @@ function initDB(version, callback){
       objectStore.createIndex("Link", "Link", {unique: false});
     }
 
+    seedData(e.target.result);
+
     callback(thisDB);
   }
 
   openRequest.onsuccess = function(e) {
+    seedData(e.target.result);
     console.log("openDatabase(): Success!");
 	  console.log(e.target.result);
     callback(e.target.result);
@@ -27,6 +30,26 @@ function initDB(version, callback){
     console.log("openDatabase(): Error");
     callback(e.target.result);
   }
+}
+
+function handleStateChange(data) {
+}
+
+function seedData(dbHandler) {
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(data){
+    console.log(xhr.response);
+    if(xhr.readyState==4 && xhr.status==200){
+      // add into database
+    insertMultipleEntries(dbHandler, xhr.response);
+    }
+  }; // Implemented elsewhere.
+  xhr.open("GET", chrome.extension.getURL("/seed.json"), true);
+  xhr.send();
+}
+
+function insertMultipleEntries(db, array){
+
 }
 
 // insertEntry(db, name, link)
