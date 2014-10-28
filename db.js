@@ -20,9 +20,7 @@ function initDB(version, callback){
   }
 
   openRequest.onsuccess = function(e) {
-    seedData(e.target.result);
     console.log("openDatabase(): Success!");
-	  console.log(e.target.result);
     callback(e.target.result);
   }
 
@@ -32,16 +30,11 @@ function initDB(version, callback){
   }
 }
 
-function handleStateChange(data) {
-}
-
 function seedData(dbHandler) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(data){
-    console.log(xhr.response);
     if(xhr.readyState==4 && xhr.status==200){
-      // add into database
-    insertMultipleEntries(dbHandler, xhr.response);
+      insertMultipleEntries(dbHandler, JSON.parse(xhr.response));
     }
   }; // Implemented elsewhere.
   xhr.open("GET", chrome.extension.getURL("/seed.json"), true);
@@ -49,7 +42,25 @@ function seedData(dbHandler) {
 }
 
 function insertMultipleEntries(db, array){
+  var transaction = db.transaction(["utensils"], "readwrite");
+  transaction.oncomplete = function(event) {
+    console.log("insertMultipleEntries(): complete");
+  };
+  transaction.onerror = function(event) {
+    console.log(event);
+    console.log("insertMultipleEntries(): error.");
+  };
 
+  var objectStore = transaction.objectStore("utensils");
+  // var request = objectStore.add(array);
+  for (var i in array){
+    console.log(array[i]);
+    var request = objectStore.add(array[i]);
+  }
+
+  request.onsuccess = function(event) {
+    console.log("insertMultipleEntries(): request.onsuccess");
+  }
 }
 
 // insertEntry(db, name, link)
