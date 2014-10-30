@@ -1,0 +1,21 @@
+.picture_content {
+  height: 150px;
+  width: 500px;
+  line-height: 150px;
+}
+
+.product_image {
+  height: 100px;
+  width: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  float: left;
+}
+
+.chevron {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  float: left;
+}
