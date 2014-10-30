@@ -10,13 +10,22 @@ var found = false;
 var cleaned = [];
 
 cleaned = cleaner(segs);
+<<<<<<< HEAD
 //alert(cleaned.join(" | "));  // 表示
 result = searchDB(cleaned);
 return highlight(data, result);
+=======
+
+// alert(cleaned.length);
+// alert(cleaned.join(" | "));  // 表示
+
+console.log(cleaned.length);
+console.log(cleaned.join(" | "));
+>>>>>>> origin/master
 
 
 }
-// Method to clean the data of unnecessary 
+// Method to clean the data of unnecessary
 // words and particles ")","(","、" etc...
 // returns the cleaned version of data
 function cleaner(data){

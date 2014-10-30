@@ -1,5 +1,10 @@
-//alert("recipe page visited!");
+// constants
+DB_VERSION = 2;
 
+var db;
+initDB(DB_VERSION, function(dbHandler) {
+	db = dbHandler;
+});
 
 howToStepImg = document.getElementsByClassName("howtoStep")[0];
 rows = howToStepImg.children[0];
@@ -14,17 +19,25 @@ for (i=0; i < numberOfRows; i++){
     currStep = currRow.children[j];
 
     // look for the first <p> tag
-	
+
     for(k=0; k < currStep.childElementCount; k++){
       if(currStep.children[k].tagName == "P"){
+<<<<<<< HEAD
         //comments = comments + currStep.children[k].innerText;
 		comments = currStep.children[k];
 		new_comment = parse(comments);
 		comments.innerHTML = new_comment;
+=======
+        comments = comments + currStep.children[k].innerText;
+>>>>>>> origin/master
       }
     }
 
   }
-  
+
 }
 
+<<<<<<< HEAD
+=======
+parse(comments);
+>>>>>>> origin/master
