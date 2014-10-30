@@ -90,7 +90,7 @@ function insertEntry(db, name, link){
 // name: string. Name of utensil.
 // callback: function(result). Callback function.
 function getLinkByName(name, callback) {
-	var transaction = db.transaction(["utensils"]);
+	var transaction = db.transaction(["utensils"], "readonly");
 	var objectStore = transaction.objectStore("utensils");
 	var request = objectStore.get(name);
 	request.onerror = function(event) {
