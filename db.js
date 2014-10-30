@@ -94,18 +94,14 @@ function getLinkByName(name, callback) {
 	var objectStore = transaction.objectStore("utensils");
 	var request = objectStore.get(name);
 	request.onerror = function(event) {
-		console.log("getLinkByName(): error");
 	};
 
-
-
 	request.onsuccess = function(event) {
-    console.log("searching for " + name);
-    console.log("found: " + request.result);
+
     if(typeof request.result == "undefined"){
-      callback(request.result);
+      callback(name, request.result);
     } else {
-      callback(request.result.Link);
+      callback(name, request.result.Link);
     }
 	}
 }

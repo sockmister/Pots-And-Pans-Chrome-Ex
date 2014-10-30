@@ -1,29 +1,24 @@
-
-//Method parse() will Tokenize the data using the TinySegmenter function
-//
+//Method parse() will Tokenize, Clean and Link
 function parse(data) {
 
 //Tokenize the data
 var segmenter = new TinySegmenter();                 // インスタンス生成
 var segs = segmenter.segment(data.innerText);  // 単語の配列が返る
-var found = false;
 var cleaned = [];
-
+//Clean the data
 cleaned = cleaner(segs);
-console.log(cleaned);
-result = searchDB(cleaned);
-console.log(result);
-// return highlight(data, result);
-
-getLinkByName("test", function(result) {
-	console.log(result);
+//Query Database for matches
+var result;
+searchDB(cleaned, function(searchResults) {
+	result = searchResults;
+	highlight(data, result);
 });
 
-// alert(cleaned.length);
-// alert(cleaned.join(" | "));  // 表示
 
 // console.log(cleaned.length);
 // console.log(cleaned.join(" | "));
+//Highlight and hyperlink the result
+
 
 
 }
@@ -32,15 +27,12 @@ getLinkByName("test", function(result) {
 // returns the cleaned version of data
 function cleaner(data){
 
-var delim = ["（", "）", "。","を","、","!","★","です","に","が","の"];
+var delim = ["（", "）", "。","を","、","!","★","です","に","が","の","か"];
 var cleaned = [];
 do{
-	if(data.length == 0){
-		return "";
-	}
 	word = (data.pop()).replace(/\s+/g, '');
 	found = false
-	for(j = 0; j<delim.length; j++){
+	for(var j = 0; j<delim.length; j++){
 		if(word == delim[j]){
 			found = true;
 			break;
@@ -65,28 +57,35 @@ function searchDB(keywords, callback){
 		// getLinkByName(keywords)
 		var result = [];
 		for (var i in keywords) {
-			console.log(keywords[i]);
-			getLinkByName(keywords[i], function(result){
-				if(typeof result != "undefined"){
-					result.push({word: keywords[i], link: result})
+			getLinkByName(keywords[i], function(searchTerm, searchResult){
+
+				if(typeof searchResult != "undefined"){
+					result.push(searchTerm);
+					result.push(searchResult);
+					callback(result);
 				}
 			});
+
 		}
-		callback(result);
+
 	});
 }
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
-	if (typeof data.innerText == "undefined"){
-		return "";
-	}
-	if( data.innerText.match(result[0]) == result[0]){
 
-			index = data.innerText.indexOf(result[0]);
-			link = result[0].bold().fontcolor("blue").link(result[1]);
-			result = data.innerText.replace(result[0], link);
-			return result;
+do{
+	if(typeof result == "undefined"){
+		return;
+	}
+	link = result.pop();
+	word = result.pop();
+
+	if(data.innerText.match(word) == word){
+
+			link = word.bold().fontcolor("blue").link(link);
+			data.innerHTML = data.innerText.replace(word, link);
 	}
 
+}while(result.length!=0)
 }
