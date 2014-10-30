@@ -83,12 +83,15 @@ do{
 
 	if(data.innerText.match(word) == word){
 			link = word.bold().fontcolor("blue").link(link);
-			div = document.createElement('div');
-			div.innerHTML = link + getPopupHTML();
-			div.firstChild.setAttribute("class", "popup");
-			div.firstChild.setAttribute("id", "popup" + word);
+			outerDiv = document.createElement('div');
+			innerDiv = document.createElement('span');
+			outerDiv.appendChild(innerDiv);
 
-			data.innerHTML = data.innerText.replace(word, div.innerHTML);
+			innerDiv.innerHTML = link + getPopupHTML();
+			innerDiv.setAttribute("class", "popup");
+			innerDiv.setAttribute("id", "popup" + word);
+
+			data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
 	}
 
 }while(result.length!=0)
