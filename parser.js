@@ -82,10 +82,18 @@ do{
 	word = result.pop();
 
 	if(data.innerText.match(word) == word){
-
 			link = word.bold().fontcolor("blue").link(link);
-			data.innerHTML = data.innerText.replace(word, link);
+			div = document.createElement('div');
+			div.innerHTML = link + getPopupHTML();
+			div.firstChild.setAttribute("class", "popup");
+			div.firstChild.setAttribute("id", "popup" + word);
+
+			data.innerHTML = data.innerText.replace(word, div.innerHTML);
 	}
 
 }while(result.length!=0)
+}
+
+function getPopupHTML(){
+	return "<div>insert HTML here</div>";
 }

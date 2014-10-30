@@ -7,8 +7,8 @@
   "content_scripts": [
     {
       "matches": ["http://recipe.rakuten.co.jp/recipe/*"],
-      "css": [],
-      "js": ["tiny_segmenter-0.2.js", "db.js", "parser.js", "pots.js"]
+      "css": ["popup.css"],
+      "js": ["tiny_segmenter-0.2.js", "db.js", "popup.js", "parser.js", "pots.js"]
     }
   ],
   "web_accessible_resources": [

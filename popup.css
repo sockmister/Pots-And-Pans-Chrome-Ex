@@ -19,3 +19,25 @@
   line-height: normal;
   float: left;
 }
+
+.popup {
+    position:relative;
+}
+.popup+div {
+    display: none;
+}
+.popupHover {
+    position:relative;
+}
+.popupHover+div {
+    display:block;
+    /*position:absolute;*/
+    width: 15em;
+    top:1.3em;
+    *top:20px;
+    left:70px;
+    z-index:1000;
+    background-color: #DDD;
+    padding: 5px;
+    border-radius: 4px;
+}
