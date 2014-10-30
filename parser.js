@@ -1,28 +1,20 @@
 
-//Method parse() will Tokenize the data using the TinySegmenter function
-//
+//Method parse() will Tokenize, Clean and Link 
 function parse(data) {
 
 //Tokenize the data
 var segmenter = new TinySegmenter();                 // インスタンス生成
 var segs = segmenter.segment(data.innerText);  // 単語の配列が返る
-var found = false;
 var cleaned = [];
-
+//Clean the data
 cleaned = cleaner(segs);
-<<<<<<< HEAD
-//alert(cleaned.join(" | "));  // 表示
+//Query Database for matches
 result = searchDB(cleaned);
-return highlight(data, result);
-=======
-
-// alert(cleaned.length);
-// alert(cleaned.join(" | "));  // 表示
+//Highlight and hyperlink the result
+highlight(data, result);
 
 console.log(cleaned.length);
 console.log(cleaned.join(" | "));
->>>>>>> origin/master
-
 
 }
 // Method to clean the data of unnecessary
@@ -30,7 +22,7 @@ console.log(cleaned.join(" | "));
 // returns the cleaned version of data
 function cleaner(data){
 
-var delim = ["（", "）", "。","を","、","!","★","です","に","が","の"];
+var delim = ["（", "）", "。","を","、","!","★","です","に","が","の","か"];
 var cleaned = [];
 do{
 	word = (data.pop()).replace(/\s+/g, '');
@@ -58,12 +50,16 @@ function searchDB(keywords){
 }
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
-	if( data.innerText.match(result[0]) == result[0]){
-	
-			index = data.innerText.indexOf(result[0]);
-			link = result[0].bold().fontcolor("blue").link(result[1]);
-			result = data.innerText.replace(result[0], link);
-			return result;
+
+do{
+	link = result.pop();
+	word = result.pop();
+
+	if(data.innerText.match(word) == word){
+			
+			link = word.bold().fontcolor("blue").link(link);
+			data.innerHTML = data.innerText.replace(word, link);
 	}
 
+}while(result.length!=0)
 }
