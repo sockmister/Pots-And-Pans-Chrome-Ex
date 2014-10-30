@@ -97,8 +97,15 @@ function getLinkByName(name, callback) {
 		console.log("getLinkByName(): error");
 	};
 
-  // TODO handle when object not found
+
+
 	request.onsuccess = function(event) {
-    callback(request.result.Link);
+    console.log("searching for " + name);
+    console.log("found: " + request.result);
+    if(typeof request.result == "undefined"){
+      callback(request.result);
+    } else {
+      callback(request.result.Link);
+    }
 	}
 }
