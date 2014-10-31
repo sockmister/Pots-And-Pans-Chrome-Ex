@@ -17,7 +17,7 @@ function initDB(version, callback){
   }
 
   openRequest.onsuccess = function(e) {
-    console.log("openDatabase(): Success!");
+    // console.log("openDatabase(): Success!");
     callback(e.target.result);
   }
 
@@ -44,14 +44,12 @@ function insertMultipleEntries(db, array){
     console.log("insertMultipleEntries(): complete");
   };
   transaction.onerror = function(event) {
-    console.log(event);
-    console.log("insertMultipleEntries(): error.");
+    // console.log("insertMultipleEntries(): error.");
   };
 
   var objectStore = transaction.objectStore("utensils");
   // var request = objectStore.add(array);
   for (var i in array){
-    console.log(array[i]);
     var request = objectStore.add(array[i]);
   }
 

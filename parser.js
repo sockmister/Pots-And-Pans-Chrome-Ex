@@ -1,51 +1,42 @@
 //Method parse() will Tokenize, Clean and Link
 function parse(data) {
 
-//Tokenize the data
-var segmenter = new TinySegmenter();                 // インスタンス生成
-var segs = segmenter.segment(data.innerText);  // 単語の配列が返る
-var cleaned = [];
-//Clean the data
-cleaned = cleaner(segs);
-//Query Database for matches
-var result;
-searchDB(cleaned, function(searchResults) {
-	result = searchResults;
-	highlight(data, result);
-});
-
-
-// console.log(cleaned.length);
-// console.log(cleaned.join(" | "));
-//Highlight and hyperlink the result
-
-
-
+	//Tokenize the data
+	var segmenter = new TinySegmenter();                 // インスタンス生成
+	var segs = segmenter.segment(data.innerText);  // 単語の配列が返る
+	var cleaned = [];
+	//Clean the data
+	cleaned = cleaner(segs);
+	//Query Database for matches
+	var result;
+	searchDB(cleaned, function(searchResults) {
+		result = searchResults;
+		highlight(data, result);
+	});
 }
+
 // Method to clean the data of unnecessary
 // words and particles ")","(","、" etc...
 // returns the cleaned version of data
 function cleaner(data){
-
-var delim = ["（", "）", "。","を","、","!","★","です","に","が","の","か"];
-var cleaned = [];
-do{
-	word = (data.pop()).replace(/\s+/g, '');
-	found = false
-	for(var j = 0; j<delim.length; j++){
-		if(word == delim[j]){
-			found = true;
-			break;
+	var delim = ["（", "）", "。","を","、","!","★","です","に","が","の","か"];
+	var cleaned = [];
+	do{
+		word = (data.pop()).replace(/\s+/g, '');
+		found = false
+		for(var j = 0; j<delim.length; j++){
+			if(word == delim[j]){
+				found = true;
+				break;
+			}
 		}
-	}
-	if(found == false){
-		cleaned.push(word);
-	}
-}while(data.length!=0)
-f
-clean = cleaned.reverse();
+		if(found == false){
+			cleaned.push(word);
+		}
+	}while(data.length!=0)
+	clean = cleaned.reverse();
 
-return clean;
+	return clean;
 }
 
 // example return:
@@ -70,30 +61,30 @@ function searchDB(keywords, callback){
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
+	do{
+		if(typeof result == "undefined"){
+			return;
+		}
+		details = result.pop();
+		link = details.Link;
+		word = result.pop();
 
-do{
-	if(typeof result == "undefined"){
-		return;
-	}
-	details = result.pop();
-	link = details.Link;
-	word = result.pop();
+		// matches only the first instance, and ignores later instances
+		if(data.innerText.match(word) == word){
+				link = word.bold().fontcolor("#BF0000").link(link);
+				outerDiv = document.createElement('div');
+				innerDiv = document.createElement('span');
+				outerDiv.appendChild(innerDiv);
 
-	if(data.innerText.match(word) == word){
-			link = word.bold().fontcolor("#BF0000").link(link);
-			outerDiv = document.createElement('div');
-			innerDiv = document.createElement('span');
-			outerDiv.appendChild(innerDiv);
+				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details);
+				innerDiv.setAttribute("class", "popup");
+				innerDiv.setAttribute("id", "popup" + word);
 
-			innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details);
-			innerDiv.setAttribute("class", "popup");
-			innerDiv.setAttribute("id", "popup" + word);
+				data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
+				setPopupFunction();
+		}
 
-			data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
-			setPopupFunction();
-	}
-
-}while(result.length!=0)
+	}while(result.length!=0)
 }
 
 // ProductName, Link, ImageURL, Price
@@ -103,7 +94,7 @@ function getPopupHTMLTemplate(name, details){
 		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
 		<a href=\"" + details.Link + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.ImageURL + "\"></img></a>\
 		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
-		<p class=\"productPrice\">"+details.Price+"</p>\
+		<p class=\"productPrice\">価格"+details.Price+"</p>\
 	</div>\
 	</div>";
 }
