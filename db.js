@@ -11,7 +11,7 @@ function initDB(version, callback){
       objectStore = thisDB.createObjectStore("utensils", {keyPath: "Name"});
 
       objectStore.createIndex("Name", "Name", {unique: true});
-      objectStore.createIndex("Link", "Link", {unique: false});
+      // objectStore.createIndex("Details", "Details", {unique: false});
     }
     callback(thisDB);
   }
@@ -98,7 +98,26 @@ function getLinkByName(name, callback) {
     if(typeof request.result == "undefined"){
       callback(name, request.result);
     } else {
-      callback(name, request.result.Link);
+      callback(name, request.result.Details.Link);
     }
 	}
+}
+
+// getLinkByName
+// name: string. Name of utensil.
+// callback: function(result). Callback function.
+function getDetailsByName(name, callback) {
+  var transaction = db.transaction(["utensils"], "readonly");
+  var objectStore = transaction.objectStore("utensils");
+  var request = objectStore.get(name);
+  request.onerror = function(event) {
+  };
+
+  request.onsuccess = function(event) {
+    if(typeof request.result == "undefined"){
+      callback(name, request.result);
+    } else {
+      callback(name, request.result.Details);
+    }
+  }
 }

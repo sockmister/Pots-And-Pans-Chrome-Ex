@@ -1,9 +1,6 @@
-console.log("getting popups...");
-
 function setPopupFunction(){
   var span = document.querySelectorAll(".popup");
   for (var i = span.length; i--;) {
-    console.log(span);
     (function () {
           var t;
           span[i].onmouseover = function () {

@@ -42,7 +42,7 @@ do{
 		cleaned.push(word);
 	}
 }while(data.length!=0)
-
+f
 clean = cleaned.reverse();
 
 return clean;
@@ -57,17 +57,14 @@ function searchDB(keywords, callback){
 		// getLinkByName(keywords)
 		var result = [];
 		for (var i in keywords) {
-			getLinkByName(keywords[i], function(searchTerm, searchResult){
-
+			getDetailsByName(keywords[i], function(searchTerm, searchResult){
 				if(typeof searchResult != "undefined"){
 					result.push(searchTerm);
 					result.push(searchResult);
 					callback(result);
 				}
 			});
-
 		}
-
 	});
 }
 
@@ -78,7 +75,8 @@ do{
 	if(typeof result == "undefined"){
 		return;
 	}
-	link = result.pop();
+	details = result.pop();
+	link = details.Link;
 	word = result.pop();
 
 	if(data.innerText.match(word) == word){
@@ -87,7 +85,7 @@ do{
 			innerDiv = document.createElement('span');
 			outerDiv.appendChild(innerDiv);
 
-			innerDiv.innerHTML = link + getPopupHTML();
+			innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details);
 			innerDiv.setAttribute("class", "popup");
 			innerDiv.setAttribute("id", "popup" + word);
 
@@ -98,24 +96,14 @@ do{
 }while(result.length!=0)
 }
 
-function getPopupHTML(){
-	return "<div class=\"popup_div\"><p class=\"itemHeader\">【SALE!定価\1800→69%OFF】ロールケーキ　正角　天板　30cm</p>\
+// ProductName, Link, ImageURL, Price
+function getPopupHTMLTemplate(name, details){
+	return "<div class=\"popup_div\"><p class=\"itemHeader\">" + details.ProductName + "</p>\
 	<div class=\"picture_content\">\
 		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
-		<img class=\"product_image\" src=\"http://thumbnail.image.rakuten.co.jp/@0_mall/majimaya/cabinet/ikou_20090622/img10011537175.jpg?_ex=380x380&s=2&r=1\"></img>\
+		<a href=\"" + details.Link + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.ImageURL + "\"></img></a>\
 		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
+		<p class=\"productPrice\">"+details.Price+"</p>\
 	</div>\
-	<p>もっとみたい！</p>\
-</div>";
-}
-
-function getPopupHTMLTemplate(name, link, imageURL, price){
-	return "<div class=\"popup_div\"><p class=\"itemHeader\">【SALE!定価\1800→69%OFF】ロールケーキ　正角　天板　30cm</p>\
-	<div class=\"picture_content\">\
-		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
-		<img class=\"product_image\" src=\"http://thumbnail.image.rakuten.co.jp/@0_mall/majimaya/cabinet/ikou_20090622/img10011537175.jpg?_ex=380x380&s=2&r=1\"></img>\
-		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
-	</div>\
-	<p>もっとみたい！</p>\
 	</div>";
 }
