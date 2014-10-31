@@ -13,9 +13,6 @@ function initDB(version, callback){
       objectStore.createIndex("Name", "Name", {unique: true});
       objectStore.createIndex("Link", "Link", {unique: false});
     }
-
-    seedData(e.target.result);
-
     callback(thisDB);
   }
 

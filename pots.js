@@ -1,9 +1,10 @@
 // constants
-DB_VERSION = 2;
+DB_VERSION = 4;
 
 var db;
 initDB(DB_VERSION, function(dbHandler) {
 	db = dbHandler;
+	seedData(db);
 });
 
 howToStepImg = document.getElementsByClassName("howtoStep")[0];
