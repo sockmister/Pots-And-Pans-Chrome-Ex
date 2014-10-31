@@ -1,6 +1,9 @@
-window.onload=function(){
+console.log("getting popups...");
+
+function setPopupFunction(){
   var span = document.querySelectorAll(".popup");
   for (var i = span.length; i--;) {
+    console.log(span);
     (function () {
           var t;
           span[i].onmouseover = function () {
@@ -12,15 +15,15 @@ window.onload=function(){
               var self = this;
               t = setTimeout(function () {
                   self.className = 'popup';
-              }, 300);
+              }, 200);
           };
       })();
   }
-
-  function hideAll() {
-      for (var i = span.length; i--;) {
-          span[i].className = 'popup';
-      }
-  };
-
 }
+
+function hideAll() {
+    var span = document.querySelectorAll(".popup");
+    for (var i = span.length; i--;) {
+        span[i].className = 'popup';
+    }
+};

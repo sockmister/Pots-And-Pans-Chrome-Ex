@@ -14,6 +14,8 @@ for (var i=0; i < numberOfRows; i++){
   numberOfSteps = rows.children[i].childElementCount;
 
   currRow = rows.children[i];
+	console.log(currRow);
+	currRow.style.cssText = "overflow: visible !important";
   for (var j=0; j < numberOfSteps; j++){
     currStep = currRow.children[j];
 
