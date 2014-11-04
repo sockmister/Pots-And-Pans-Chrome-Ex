@@ -1,5 +1,5 @@
 // constants
-DB_VERSION = 7;
+DB_VERSION = 9;
 
 var db;
 initDB(DB_VERSION, function(dbHandler) {
