@@ -77,6 +77,9 @@ function highlight(data, result){
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 
+				console.log(innerDiv);
+				// setPopupFuncElem(innerDiv);
+
 				data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
 				setPopupFunction();
 		}
