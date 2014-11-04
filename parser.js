@@ -45,13 +45,11 @@ function searchDB(keywords, callback){
 	// initDB(DB_VERSION, function(dbHandler) {
 	// 	db = dbHandler;
 	// 	// getLinkByName(keywords)
-		var result = [];
+		// var result = [];
 		for (var i in keywords) {
 			getDetailsByName(keywords[i], function(searchTerm, searchResult){
 				if(typeof searchResult != "undefined"){
-					result.push(searchTerm);
-					result.push(searchResult);
-					callback(result);
+					callback([searchTerm, searchResult]);
 				}
 			});
 		}
