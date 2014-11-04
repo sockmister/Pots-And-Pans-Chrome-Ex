@@ -45,6 +45,7 @@ function insertMultipleEntries(db, array){
   };
   transaction.onerror = function(event) {
     // console.log("insertMultipleEntries(): error.");
+    // console.log(event);
   };
 
   var objectStore = transaction.objectStore("utensils");
@@ -54,7 +55,7 @@ function insertMultipleEntries(db, array){
   }
 
   request.onsuccess = function(event) {
-    console.log("insertMultipleEntries(): request.onsuccess");
+    // console.log("insertMultipleEntries(): request.onsuccess");
   }
 }
 
