@@ -19,20 +19,23 @@ function setPopupFunction(){
 }
 
 function setPopupFuncElem(element){
-  (function () {
-    var t;
-    element.onmouseover = function () {
-        hideAll();
-        clearTimeout(t);
-        this.className = 'popupHover';
-    };
-    element.onmouseout = function () {
-        var self = this;
-        t = setTimeout(function () {
-            self.className = 'popup';
-        }, 250);
-    };
-  })();
+  var span = element.querySelectorAll(".popup");
+  for (var i = span.length; i--;) {
+    (function () {
+          var t;
+          span[i].onmouseover = function () {
+              hideAll();
+              clearTimeout(t);
+              this.className = 'popupHover';
+          };
+          span[i].onmouseout = function () {
+              var self = this;
+              t = setTimeout(function () {
+                  self.className = 'popup';
+              }, 200);
+          };
+      })();
+  }
 }
 
 function hideAll() {

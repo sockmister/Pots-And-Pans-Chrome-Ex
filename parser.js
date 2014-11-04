@@ -8,7 +8,7 @@ function parse(data) {
 	cleaned = cleaner(segs);
 	//Query Database for matches
 	var result;
-	searchDB(cleaned, function(searchResults) {
+	searchDBRecursive(cleaned, function(searchResults) {
 		result = searchResults;
 		highlight(data, result);
 	});
@@ -53,12 +53,36 @@ function searchDB(keywords, callback){
 				}
 			});
 		}
+
+
 	// });
+}
+
+function searchDBRecursive(keywords, callback) {
+		var results = [];
+
+		function recur(keywords, callback) {
+			if(keywords.length == 0){
+				callback(results);
+			} else {
+				getDetailsByName(keywords[keywords.length-1], function(searchTerm, searchResult){
+					// console.log(keywords);
+					keywords.pop();
+					if(typeof searchResult != "undefined"){
+						results.push(searchTerm);
+						results.push(searchResult);
+					}
+					recur(keywords, callback);
+				});
+			}
+		}
+
+		recur(keywords, callback);
 }
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
-	do{
+	while(result.length!=0){
 		if(typeof result == "undefined"){
 			return;
 		}
@@ -77,14 +101,11 @@ function highlight(data, result){
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 
-				console.log(innerDiv);
-				// setPopupFuncElem(innerDiv);
-
 				data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
-				setPopupFunction();
 		}
+	}
 
-	}while(result.length!=0)
+	setPopupFuncElem(data);
 }
 
 // ProductName, Link, ImageURL, Price
