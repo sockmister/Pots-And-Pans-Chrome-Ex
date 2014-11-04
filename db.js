@@ -1,8 +1,10 @@
 function initDB(version, callback){
   var openRequest = indexedDB.open("dictionary", version);
+  var upgrade = false;
 
   // new database or new version
   openRequest.onupgradeneeded = function(e) {
+    upgrade = true;
     console.log("openDatabase(): running onupgradeneeded");
     var thisDB = e.target.result;
 
@@ -13,35 +15,35 @@ function initDB(version, callback){
       objectStore.createIndex("Name", "Name", {unique: true});
       // objectStore.createIndex("Details", "Details", {unique: false});
     }
-    callback(thisDB);
+    // callback(thisDB, true);
   }
 
   openRequest.onsuccess = function(e) {
     // console.log("openDatabase(): Success!");
-    callback(e.target.result);
+    callback(e.target.result, upgrade);
   }
 
   openRequest.onerror = function(e) {
     console.log("openDatabase(): Error");
-    callback(e.target.result);
+    callback(e.target.result, upgrade);
   }
 }
 
-function seedData(dbHandler) {
+function seedData(dbHandler, callback) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(data){
     if(xhr.readyState==4 && xhr.status==200){
-      insertMultipleEntries(dbHandler, JSON.parse(xhr.response));
+      insertMultipleEntries(dbHandler, JSON.parse(xhr.response), callback);
     }
   }; // Implemented elsewhere.
   xhr.open("GET", chrome.extension.getURL("/seed.json"), true);
   xhr.send();
 }
 
-function insertMultipleEntries(db, array){
+function insertMultipleEntries(db, array, callback){
   var transaction = db.transaction(["utensils"], "readwrite");
   transaction.oncomplete = function(event) {
-    console.log("insertMultipleEntries(): complete");
+    callback();
   };
   transaction.onerror = function(event) {
     // console.log("insertMultipleEntries(): error.");

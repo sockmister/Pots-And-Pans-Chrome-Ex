@@ -1,6 +1,5 @@
 //Method parse() will Tokenize, Clean and Link
 function parse(data) {
-
 	//Tokenize the data
 	var segmenter = new TinySegmenter();                 // インスタンス生成
 	var segs = segmenter.segment(data.innerText);  // 単語の配列が返る

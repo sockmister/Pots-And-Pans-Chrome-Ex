@@ -2,10 +2,20 @@
 DB_VERSION = 9;
 
 var db;
-initDB(DB_VERSION, function(dbHandler) {
+var upgraded = false;
+initDB(DB_VERSION, function(dbHandler, upgraded) {
 	db = dbHandler;
-	seedData(db);
-	
+
+	if(upgraded){
+		seedData(db, function(){
+			startParsing();
+		});
+	} else{
+		startParsing();
+	}
+});
+
+function startParsing(){
 	howToStepImg = document.getElementsByClassName("howtoStep")[0];
 	rows = howToStepImg.children[0];
 	numberOfRows = rows.childElementCount;
@@ -27,5 +37,4 @@ initDB(DB_VERSION, function(dbHandler) {
 			}
 		}
 	}
-
-});
+}
