@@ -42,10 +42,10 @@ function cleaner(data){
 // example return:
 // [{"天板", "http://item.rakuten.co.jp/asai-tool/yk-0652/"}, {"粉ふるい器", "http://item.rakuten.co.jp/interior-palette/4904940008934/"}]
 function searchDB(keywords, callback){
-	var db;
-	initDB(DB_VERSION, function(dbHandler) {
-		db = dbHandler;
-		// getLinkByName(keywords)
+	// var db;
+	// initDB(DB_VERSION, function(dbHandler) {
+	// 	db = dbHandler;
+	// 	// getLinkByName(keywords)
 		var result = [];
 		for (var i in keywords) {
 			getDetailsByName(keywords[i], function(searchTerm, searchResult){
@@ -56,7 +56,7 @@ function searchDB(keywords, callback){
 				}
 			});
 		}
-	});
+	// });
 }
 
 //Method to hyperlink the found kitchen Utensils
