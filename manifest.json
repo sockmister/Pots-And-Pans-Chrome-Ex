@@ -12,6 +12,7 @@
     }
   ],
   "web_accessible_resources": [
-    "seed.json"
+    "seed.json",
+    "girl_susume.jpg"
   ]
 }

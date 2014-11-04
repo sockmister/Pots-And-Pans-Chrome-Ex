@@ -110,12 +110,15 @@ function highlight(data, result){
 
 // ProductName, Link, ImageURL, Price
 function getPopupHTMLTemplate(name, details){
+	girlSusumeLink = chrome.extension.getURL("girl_susume.jpg");
+
 	return "<div class=\"popup_div\"><p class=\"itemHeader\">" + details.ProductName + "</p>\
 	<div class=\"picture_content\">\
 		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
 		<a href=\"" + details.Link + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.ImageURL + "\"></img></a>\
 		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
 		<p class=\"productPrice\">価格"+details.Price+"</p>\
+		<img class=\"girlSusume\" src=\"" +girlSusumeLink+ "\"></img>\
 	</div>\
 	</div>";
 }
