@@ -9,17 +9,26 @@ function initDB(version, callback){
     var thisDB = e.target.result;
 
     if(!thisDB.objectStoreNames.contains("utensils")) {
-
+      // deprecated
       objectStore = thisDB.createObjectStore("utensils", {keyPath: "Name"});
-
       objectStore.createIndex("Name", "Name", {unique: true});
-      // objectStore.createIndex("Details", "Details", {unique: false});
     }
+    if(!thisDB.objectStoreNames.contains("utensilsStore")) {
+      // Utensil: Japanese to ID
+      objectStore = thisDB.createObjectStore("utensilsStore", {keyPath: "Name"});
+      objectStore.createIndex("Name", "Name", {unique: true});
+    }
+    if(!thisDB.objectStoreNames.contains("utensilsDetails")) {
+      // Details: ID to link details
+      objectStore = thisDB.createObjectStore("utensilsDetails", {keyPath: "ID"});
+      objectStore.createIndex("ID", "ID", {unique: true});
+    }
+
     // callback(thisDB, true);
   }
 
   openRequest.onsuccess = function(e) {
-    // console.log("openDatabase(): Success!");
+    console.log("openDatabase(): Success!");
     callback(e.target.result, upgrade);
   }
 
@@ -30,6 +39,7 @@ function initDB(version, callback){
 }
 
 function seedData(dbHandler, callback) {
+
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(data){
     if(xhr.readyState==4 && xhr.status==200){
@@ -40,6 +50,47 @@ function seedData(dbHandler, callback) {
   xhr.send();
 }
 
+function seedNewData(dbHandler, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(data){
+    if(xhr.readyState==4 && xhr.status==200){
+      // insertMultipleEntries(dbHandler, JSON.parse(xhr.response), callback);
+      insertLinkDetails(dbHandler, JSON.parse(xhr.response), callback);
+    }
+  }; // Implemented elsewhere.
+  xhr.open("GET", chrome.extension.getURL("/newSeed.json"), true);
+  xhr.send();
+
+  var xhrDict = new XMLHttpRequest();
+  xhrDict.onreadystatechange = function(data) {
+    if(xhrDict.readyState==4 && xhrDict.status==200){
+      insertEntries(dbHandler, "utensilsStore", JSON.parse(xhrDict.response), callback);
+    }
+  };
+  xhrDict.open("GET", chrome.extension.getURL("/utensils.json"), true);
+  xhrDict.send();
+}
+
+function insertLinkDetails(db, array, callback) {
+  var transaction = db.transaction(["utensilsDetails"], "readwrite");
+  transaction.oncomplete = function(event) {
+    console.log("insertLinkDetails() success.");
+    callback();
+  };
+  transaction.onerror = function(event) {
+    callback();
+  };
+
+  var objectStore = transaction.objectStore("utensilsDetails");
+  for (var i in array){
+    var request = objectStore.add(array[i]);
+  }
+
+  request.onsuccess = function(event) {
+    // console.log("insertMultipleEntries(): request.onsuccess");
+  }
+}
+
 function insertMultipleEntries(db, array, callback){
   var transaction = db.transaction(["utensils"], "readwrite");
   transaction.oncomplete = function(event) {
@@ -48,6 +99,7 @@ function insertMultipleEntries(db, array, callback){
   transaction.onerror = function(event) {
     // console.log("insertMultipleEntries(): error.");
     // console.log(event);
+    callback();
   };
 
   var objectStore = transaction.objectStore("utensils");
@@ -58,6 +110,24 @@ function insertMultipleEntries(db, array, callback){
 
   request.onsuccess = function(event) {
     // console.log("insertMultipleEntries(): request.onsuccess");
+  }
+}
+
+function insertEntries(db, storeName, array, callback){
+  var transaction = db.transaction([storeName], "readwrite");
+  transaction.oncomplete = function(event) {
+    callback();
+  };
+  transaction.onerror = function(event) {
+    callback();
+  };
+
+  var objectStore = transaction.objectStore(storeName);
+  for (var i in array){
+    var request = objectStore.add(array[i]);
+  }
+
+  request.onsuccess = function(event) {
   }
 }
 
@@ -121,4 +191,12 @@ function getDetailsByName(name, callback) {
       callback(name, request.result.Details);
     }
   }
+}
+
+function wordExist(word, callback){
+
+}
+
+function getDetailsByID(id, callback) {
+
 }

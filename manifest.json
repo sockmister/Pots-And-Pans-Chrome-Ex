@@ -1,5 +1,4 @@
 {
-
   "name": "Pots and Pans",
   "description": "Pots and Pans",
   "manifest_version": 2,
@@ -13,6 +12,8 @@
   ],
   "web_accessible_resources": [
     "seed.json",
+    "newSeed.json",
+    "utensils.json",
     "girl_susume.jpg"
   ]
 }
