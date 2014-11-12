@@ -1,17 +1,39 @@
 //Method parse() will Tokenize, Clean and Link
-function parse(data) {
+function parse(rma, data) {
 	//Tokenize the data
-	var segmenter = new TinySegmenter();                 // インスタンス生成
-	var segs = segmenter.segment(data.innerText);  // 単語の配列が返る
-	var cleaned = [];
-	//Clean the data
-	cleaned = cleaner(segs);
+	// TODO split by commas
+
+	tokens = rma.tokenize(data.innerText);
+	tokens = filter(tokens);
+
 	//Query Database for matches
 	var result;
-	searchDBRecursive(cleaned, function(searchResults) {
+	// TODO parse: check noun utensil, check related verbs, check related nouns
+	searchDBRecursive(tokens, function(searchResults) {
 		result = searchResults;
 		highlight(data, result);
 	});
+}
+
+function isNoun(token){
+	var char = token[1][0];
+	return char == "N";
+}
+
+function isVerb(token){
+	var char = token[1][0];
+	return char == "V";
+}
+
+function filter(tokens){
+	result = [];
+	for(var i = 0; i < tokens.length; i++){
+		if(isNoun(tokens[i]) || isVerb(tokens[i])){
+			result.push(tokens[i][0]);
+		}
+	}
+
+	return result;
 }
 
 // Method to clean the data of unnecessary
@@ -66,7 +88,6 @@ function searchDBRecursive(keywords, callback) {
 				callback(results);
 			} else {
 				getDetailsByName(keywords[keywords.length-1], function(searchTerm, searchResult){
-					// console.log(keywords);
 					keywords.pop();
 					if(typeof searchResult != "undefined"){
 						results.push(searchTerm);
@@ -90,6 +111,10 @@ function highlight(data, result){
 		link = details.Link;
 		word = result.pop();
 
+		console.log(result);
+		console.log(word);
+		console.log(details);
+
 		// matches only the first instance, and ignores later instances
 		if(data.innerText.match(word) == word){
 				link = word.bold().fontcolor("#BF0000").link(link);
@@ -103,6 +128,8 @@ function highlight(data, result){
 
 				data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
 		}
+
+		console.log(data.innerHTML);
 	}
 
 	setPopupFuncElem(data);

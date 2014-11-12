@@ -3,21 +3,27 @@ DB_VERSION = 42;
 
 var db;
 var upgraded = false;
-initDB(DB_VERSION, function(dbHandler, upgraded) {
-	db = dbHandler;
 
-	if(upgraded){
-		seedData(db, function(){
-			seedNewData(db, function(){
-				startParsing();
+$.getJSON(chrome.extension.getURL('/rakutenma-master/model_ja.min.json'), function(model) {
+	var rma = new RakutenMA(model);
+	rma.featset = RakutenMA.default_featset_ja;
+	rma.hash_func = RakutenMA.create_hash_func(15);
+
+	initDB(DB_VERSION, function(dbHandler, upgraded) {
+		db = dbHandler
+		if(upgraded){
+			seedData(db, function(){
+				seedNewData(db, function(){
+					startParsing(rma);
+				});
 			});
-		});
-	} else{
-		startParsing();
-	}
+		} else{
+			startParsing(rma);
+		}
+	});
 });
 
-function startParsing(){
+function startParsing(rma){
 	howToStepImg = document.getElementsByClassName("howtoStep")[0];
 	rows = howToStepImg.children[0];
 	numberOfRows = rows.childElementCount;
@@ -34,7 +40,7 @@ function startParsing(){
 			for(var k=0; k < currStep.childElementCount; k++){
 				if(currStep.children[k].tagName == "P"){
 					comments = currStep.children[k];
-					parse(comments);
+					parse(rma, comments);
 				}
 			}
 		}

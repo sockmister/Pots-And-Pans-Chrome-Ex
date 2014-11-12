@@ -7,10 +7,20 @@
     {
       "matches": ["http://recipe.rakuten.co.jp/recipe/*"],
       "css": ["popup.css"],
-      "js": ["tiny_segmenter-0.2.js", "db.js", "popup.js", "parser.js", "pots.js"]
+      "js": [
+        "jquery-1.11.1.min.js",
+        "rakutenma-master/rakutenma.js",
+        "rakutenma-master/hanzenkaku.js",
+        "tiny_segmenter-0.2.js",
+        "db.js",
+        "popup.js",
+        "parser.js",
+        "pots.js"
+        ]
     }
   ],
   "web_accessible_resources": [
+    "rakutenma-master/model_ja.min.json",
     "seed.json",
     "newSeed.json",
     "utensils.json",
