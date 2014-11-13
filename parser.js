@@ -103,20 +103,18 @@ function searchDBRecursive(keywords, callback) {
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
+	var highlighted = {};
+
 	while(result.length!=0){
 		if(typeof result == "undefined"){
 			return;
 		}
-		details = result.pop();
-		link = details.Link;
-		word = result.pop();
-
-		console.log(result);
-		console.log(word);
-		console.log(details);
+		var details = result.pop();
+		var link = details.Link;
+		var word = result.pop();
 
 		// matches only the first instance, and ignores later instances
-		if(data.innerText.match(word) == word){
+		if(!highlighted[word] && data.innerText.match(word) == word){
 				link = word.bold().fontcolor("#BF0000").link(link);
 				outerDiv = document.createElement('div');
 				innerDiv = document.createElement('span');
@@ -126,10 +124,9 @@ function highlight(data, result){
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 
-				data.innerHTML = data.innerText.replace(word, outerDiv.innerHTML);
+				data.innerHTML = data.innerHTML.replace(word, outerDiv.innerHTML);
 		}
-
-		console.log(data.innerHTML);
+		highlighted[word] = true;
 	}
 
 	setPopupFuncElem(data);
