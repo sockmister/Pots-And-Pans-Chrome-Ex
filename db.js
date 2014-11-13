@@ -46,7 +46,7 @@ function seedData(dbHandler, callback) {
       insertMultipleEntries(dbHandler, JSON.parse(xhr.response), callback);
     }
   }; // Implemented elsewhere.
-  xhr.open("GET", chrome.extension.getURL("/seed.json"), true);
+  xhr.open("GET", chrome.extension.getURL("/json_files/seed.json"), true);
   xhr.send();
 }
 
@@ -58,7 +58,7 @@ function seedNewData(dbHandler, callback) {
       insertLinkDetails(dbHandler, JSON.parse(xhr.response), callback);
     }
   }; // Implemented elsewhere.
-  xhr.open("GET", chrome.extension.getURL("/newSeed.json"), true);
+  xhr.open("GET", chrome.extension.getURL("/json_files/newSeed.json"), true);
   xhr.send();
 
   var xhrDict = new XMLHttpRequest();
@@ -67,7 +67,7 @@ function seedNewData(dbHandler, callback) {
       insertEntries(dbHandler, "utensilsStore", JSON.parse(xhrDict.response), callback);
     }
   };
-  xhrDict.open("GET", chrome.extension.getURL("/utensils.json"), true);
+  xhrDict.open("GET", chrome.extension.getURL("/json_files/utensils.json"), true);
   xhrDict.send();
 }
 

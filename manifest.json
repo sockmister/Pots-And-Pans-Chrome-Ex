@@ -21,9 +21,9 @@
   ],
   "web_accessible_resources": [
     "rakutenma-master/model_ja.min.json",
-    "seed.json",
-    "newSeed.json",
-    "utensils.json",
+    "json_files/seed.json",
+    "json_files/newSeed.json",
+    "json_files/utensils.json",
     "girl_susume.jpg"
   ]
 }
