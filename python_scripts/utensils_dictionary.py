@@ -8,6 +8,7 @@ import io
 # output will be in utf-8 json file
 def main():
     id = 0
+    JAP_IDX = 1
     HIRA_IDX = 3
     KATA_IDX = 4
     KANJI_IDX = 5
@@ -15,8 +16,12 @@ def main():
 
     result = {}
 
+    # for crawler dictionary
+    crawler_dict = []
+
     with open('sheet1.txt', 'rb') as f:
         reader = csv.reader(f)
+        reader.next()    #skip first line
         for row in reader:
             if row[HIRA_IDX] != '':
                 result[row[HIRA_IDX]] = id
@@ -30,12 +35,28 @@ def main():
                     result[token] = id
             id += 1
 
+            #  for crawler dictionary
+            entry = []
+            if row[KANJI_IDX] != '':
+                entry.append(row[KANJI_IDX])
+                entry.append(id)
+                crawler_dict.append(entry)
+            elif row[JAP_IDX] != '':
+                entry.append(row[JAP_IDX])
+                entry.append(id)
+                crawler_dict.append(entry)
+
     # with io.open('out.json', 'w', encoding='utf8') as outfile:
     #     json_string = json.dumps(result, ensure_ascii=False).decode('utf8')
     #     json.dump(json_string, outfile, ensure_ascii=False)
 
     with open('utensils-complete.json', 'w') as outfile:
         json.dump(result, outfile, ensure_ascii=False, indent=4)
+
+    with open('crawler.csv', 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',', quotechar='|', quoting=csv.QUOTE_MINIMAL)
+        for entry in crawler_dict:
+            writer.writerow(entry)
 
 # parse other_idx
 # assume japanese comma separated
