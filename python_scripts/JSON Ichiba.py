@@ -26,23 +26,18 @@
 # 
 # 
 
-# In[7]:
+# In[63]:
 
 import json
 import requests
-
-
-# In[2]:
-
+import io
+import csv
 import time
 
 
-# In[5]:
+# In[64]:
 
-
-
-
-def search_oneitem(searchterm): 
+def search_oneitem(searchterm, searchterm_id): 
     app_id = 1076897669144252157
     url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20140222'
 
@@ -55,12 +50,8 @@ def search_oneitem(searchterm):
     
     # load a json string into a collection of lists and dicts
     data = json.loads(data)  
-    #print data
-    
-    #print 'PRINTING AVAILABILITY:  ' + str(data['Items'][0]['Item']['availability'])
-
-
-    links = [dict(item_name=data['Items'][i]['Item']['itemName'], 
+   
+    links = [dict(item_name=data['Items'][i]['Item']['itemName'].encode('utf8'), 
                   price=data['Items'][i]['Item']['itemPrice'], 
                   url=data['Items'][i]['Item']['itemUrl'],
                   has_image=data['Items'][i]['Item']['imageFlag'],
@@ -70,77 +61,71 @@ def search_oneitem(searchterm):
 
     search_link = "http://search.rakuten.co.jp/search/mall/%s/" %(searchterm)
 
-    oneitem_json = dict(Name= searchterm, Details= dict(search_link= search_link, links= links))
+    oneitem_json = dict(Name= searchterm, ID= searchterm_id, Details= dict(search_link= search_link, links= links))
     return oneitem_json
-    
-    #print json.dumps(data, indent=2)
-    #print json.dumps(oneitem_json, indent=2)
 
 
-# In[ ]:
-
-
+# In[65]:
 
 #Old code but might revert back
 '''
-     Create our own json structure
-    links = [dict(item_name=i['Item']['itemName'], 
-          price=i['Item']['itemPrice'], 
-          url=i['Item']['itemUrl'],
-          has_image=i['Item']['imageFlag'],
-          small_image_urls=i['Item']['smallImageUrls'],
-          med_image_urls=i['Item']['mediumImageUrls'],
-          availability=i['Item']['availability']) for i in data['Items']]
+#Create our own json structure
+links = [dict(item_name=i['Item']['itemName'], 
+      price=i['Item']['itemPrice'], 
+      url=i['Item']['itemUrl'],
+      has_image=i['Item']['imageFlag'],
+      small_image_urls=i['Item']['smallImageUrls'],
+      med_image_urls=i['Item']['mediumImageUrls'],
+      availability=i['Item']['availability']) for i in data['Items']]
 '''
 
 
-# In[12]:
-
-
-
-
-# In[3]:
-
-#kitch_list = ["天板", "粉ふるい器", "ボウル", "ハンドミキサー", "ナイフ"]
-kitch_list = ["粉ふるい器", "ボウル", "ナイフ", "ハンドミキサー"]
-
-
-# In[11]:
-
-
-#data = [search_oneitem(t) for t in kitch_list]
-
-'''Testing code
-for t in kitch_list:
-    print t
-    print search_oneitem(t)
-    time.sleep(1.1)
-'''
+# In[66]:
 
 def search_allitems(kitch_list): 
     data = []
     for t in kitch_list:
-        data.append(search_oneitem(t))
+        data.append(search_oneitem(t[0], t[1]))
         time.sleep(1.02)
     return data
 
 
+# In[67]:
 
-# In[9]:
+def print_json(kitch_list):
+    data = search_allitems(kitch_list) 
 
-
-
-
-# In[13]:
-
-data = search_allitems(kitch_list) 
-print json.dumps(data, indent=2)
-
-
-# In[ ]:
+    #Print to a text file
+    with io.open('data.txt', 'wb') as outfile:
+        json.dump(data, outfile, indent=4, ensure_ascii=False)
+    return
 
 
-#Print to a text file
-with open('data.txt', 'w') as outfile:
-  json.dump(data, outfile, indent=2)
+# In[68]:
+
+kitch_list = ["天板", "粉ふるい器", "ボウル", "ハンドミキサー", "ナイフ"]
+
+
+
+# In[69]:
+
+def readin_searchlist():
+    kitch_list = []
+
+    with open('kitch_searchlist.txt', 'rb') as f:    
+        reader = csv.reader(f)
+        for row in reader:
+            kitch_list.append((row[0], row[1]))
+    return kitch_list
+
+
+# In[70]:
+
+kitch_list = readin_searchlist()
+print_json(kitch_list)
+
+
+# In[70]:
+
+
 
