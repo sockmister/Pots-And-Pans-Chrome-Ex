@@ -23,6 +23,11 @@ function initDB(version, callback){
       objectStore = thisDB.createObjectStore("utensilsDetails", {keyPath: "ID"});
       objectStore.createIndex("ID", "ID", {unique: true});
     }
+    if(!thisDB.objectStoreNames.contains("verbsDictionary")) {
+      // Verbs: verb to array of ids
+      objectStore = thisDB.createObjectStore("verbsDictionary", {keyPath: "verb"});
+      objectStore.createIndex("verb", "verb", {unique: true});
+    }
 
     // callback(thisDB, true);
   }
@@ -67,8 +72,17 @@ function seedNewData(dbHandler, callback) {
       insertEntries(dbHandler, "utensilsStore", JSON.parse(xhrDict.response), callback);
     }
   };
-  xhrDict.open("GET", chrome.extension.getURL("/json_files/utensils.json"), true);
+  xhrDict.open("GET", chrome.extension.getURL("/json_files/utensils-complete.json"), true);
   xhrDict.send();
+
+  var xhrVerbs = new XMLHttpRequest();
+  xhrVerbs.onreadystatechange = function(data) {
+    if(xhrVerbs.readyState==4 && xhrVerbs.status==200){
+      insertEntries(dbHandler, "verbsDictionary", JSON.parse(xhrVerbs.response), callback);
+    }
+  };
+  xhrVerbs.open("GET", chrome.extension.getURL("/json_files/verbs.json"), true);
+  xhrVerbs.send();
 }
 
 function insertLinkDetails(db, array, callback) {
@@ -193,10 +207,38 @@ function getDetailsByName(name, callback) {
   }
 }
 
+function searchVerb(verb, callback){
+  var transaction = db.transaction(["verbsDictionary"], "readonly");
+  var objectStore = transaction.objectStore("verbsDictionary");
+  var request = objectStore.get(verb);
+  request.onerror = function(event) {
+  };
+
+  request.onsuccess = function(event) {
+    if(typeof request.result == "undefined"){
+      callback(verb, request.result);
+    } else {
+      callback(verb, request.result.ids);
+    }
+  }
+}
+
 function wordExist(word, callback){
 
 }
 
 function getDetailsByID(id, callback) {
+  var transaction = db.transaction(["utensilsDetails"], "readonly");
+  var objectStore = transaction.objectStore("utensilsDetails");
+  var request = objectStore.get(4);
+  request.onerror = function(event) {
+  };
 
+  request.onsuccess = function(event) {
+    if(typeof request.result == "undefined"){
+      callback(id, request.result);
+    } else {
+      callback(id, request.result.Details);
+    }
+  }
 }

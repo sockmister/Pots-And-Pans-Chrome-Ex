@@ -9,10 +9,29 @@ function parse(rma, data) {
 	//Query Database for matches
 	var result;
 	// TODO parse: check noun utensil, check related verbs, check related nouns
-	searchDBRecursive(tokens, function(searchResults) {
+
+	// check noun utensil
+	searchUtensil(tokens, function(searchResults) {
 		result = searchResults;
 		highlight(data, result);
 	});
+
+	// check verbs
+	for(var i = 0; i < tokens.length; i++){
+		if(isVerb(tokens[i])){
+			searchVerb(tokens[i][0], function(verb, searchResults){
+				if(typeof searchResults != "undefined") {
+					// retrieve the possible utensils
+					// TODO how to decide what items to use?
+					getDetailsByID(searchResults[0], function(id, details){
+						if(typeof details != "undefined") {
+							highlight(data, [verb, details]);
+						}
+					});
+				}
+			});
+		}
+	}
 }
 
 function isNoun(token){
@@ -29,7 +48,7 @@ function filter(tokens){
 	result = [];
 	for(var i = 0; i < tokens.length; i++){
 		if(isNoun(tokens[i]) || isVerb(tokens[i])){
-			result.push(tokens[i][0]);
+			result.push(tokens[i]);
 		}
 	}
 
@@ -63,11 +82,6 @@ function cleaner(data){
 // example return:
 // [{"天板", "http://item.rakuten.co.jp/asai-tool/yk-0652/"}, {"粉ふるい器", "http://item.rakuten.co.jp/interior-palette/4904940008934/"}]
 function searchDB(keywords, callback){
-	// var db;
-	// initDB(DB_VERSION, function(dbHandler) {
-	// 	db = dbHandler;
-	// 	// getLinkByName(keywords)
-		// var result = [];
 		for (var i in keywords) {
 			getDetailsByName(keywords[i], function(searchTerm, searchResult){
 				if(typeof searchResult != "undefined"){
@@ -75,19 +89,16 @@ function searchDB(keywords, callback){
 				}
 			});
 		}
-
-
-	// });
 }
 
-function searchDBRecursive(keywords, callback) {
+function searchUtensil(keywords, callback) {
 		var results = [];
 
 		function recur(keywords, callback) {
 			if(keywords.length == 0){
 				callback(results);
 			} else {
-				getDetailsByName(keywords[keywords.length-1], function(searchTerm, searchResult){
+				getDetailsByName(keywords[keywords.length-1][0], function(searchTerm, searchResult){
 					keywords.pop();
 					if(typeof searchResult != "undefined"){
 						results.push(searchTerm);
@@ -99,6 +110,11 @@ function searchDBRecursive(keywords, callback) {
 		}
 
 		recur(keywords, callback);
+}
+
+function searchRelatedVerbs(verb, callback) {
+	var results = [];
+	searchVerb(verb, callback);
 }
 
 //Method to hyperlink the found kitchen Utensils

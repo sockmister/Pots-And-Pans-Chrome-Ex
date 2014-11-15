@@ -24,6 +24,8 @@
     "json_files/seed.json",
     "json_files/newSeed.json",
     "json_files/utensils.json",
+    "json_files/utensils-complete.json",
+    "json_files/verbs.json",
     "girl_susume.jpg"
   ]
 }

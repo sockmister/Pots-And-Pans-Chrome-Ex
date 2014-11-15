@@ -1,5 +1,5 @@
 // constants
-DB_VERSION = 44;
+DB_VERSION = 47;
 
 var db;
 var upgraded = false;
