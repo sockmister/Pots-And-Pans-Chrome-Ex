@@ -14,7 +14,7 @@ def main():
     KANJI_IDX = 5
     OTHER_IDX = 6
 
-    result = {}
+    result = []
 
     # for crawler dictionary
     crawler_dict = []
@@ -24,15 +24,27 @@ def main():
         reader.next()    #skip first line
         for row in reader:
             if row[HIRA_IDX] != '':
-                result[row[HIRA_IDX]] = id
+                entry = {}
+                entry['Name'] = row[HIRA_IDX]
+                entry['id'] = id
+                result.append(entry)
             if row[KATA_IDX] != '':
-                result[row[KATA_IDX]] = id
+                entry = {}
+                entry['Name'] = row[KATA_IDX]
+                entry['id'] = id
+                result.append(entry)
             if row[KANJI_IDX] != '':
-                result[row[KANJI_IDX]] = id
+                entry = {}
+                entry['Name'] = row[KANJI_IDX]
+                entry['id'] = id
+                result.append(entry)
             if row[OTHER_IDX] != '':
                 others_token = parse_other_idx(row[OTHER_IDX])
                 for token in others_token:
-                    result[token] = id
+                    entry = {}
+                    entry['Name'] = token
+                    entry['id'] = id
+                    result.append(entry)
             id += 1
 
             #  for crawler dictionary
