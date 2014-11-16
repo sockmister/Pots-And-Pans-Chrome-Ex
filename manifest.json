@@ -12,6 +12,7 @@
         "rakutenma-master/rakutenma.js",
         "rakutenma-master/hanzenkaku.js",
         "tiny_segmenter-0.2.js",
+        "conjugator.js",
         "db.js",
         "popup.js",
         "parser.js",

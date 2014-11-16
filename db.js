@@ -230,6 +230,7 @@ function wordExist(word, callback){
 function getDetailsByID(id, callback) {
   var transaction = db.transaction(["utensilsDetails"], "readonly");
   var objectStore = transaction.objectStore("utensilsDetails");
+  id = parseInt(id);
   var request = objectStore.get(4);
   request.onerror = function(event) {
   };

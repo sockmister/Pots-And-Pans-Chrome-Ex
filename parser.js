@@ -19,7 +19,10 @@ function parse(rma, data) {
 	// check verbs
 	for(var i = 0; i < tokens.length; i++){
 		if(isVerb(tokens[i])){
-			searchVerb(tokens[i][0], function(verb, searchResults){
+			// unconjugate verb first
+			console.log(tokens[i][0]);
+			console.log(unconjugate(tokens[i][0]));
+			searchVerb(unconjugate(tokens[i][0]).word, function(verb, searchResults){
 				if(typeof searchResults != "undefined") {
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
@@ -47,6 +50,7 @@ function isVerb(token){
 function filter(tokens){
 	result = [];
 	for(var i = 0; i < tokens.length; i++){
+		console.log(tokens[i]);
 		if(isNoun(tokens[i]) || isVerb(tokens[i])){
 			result.push(tokens[i]);
 		}
@@ -114,6 +118,9 @@ function searchUtensil(keywords, callback) {
 
 function searchRelatedVerbs(verb, callback) {
 	var results = [];
+	// deconjugate / deinflect verb first
+	verb = deconjugate(verb);
+	console.log(verb);
 	searchVerb(verb, callback);
 }
 
@@ -129,6 +136,7 @@ function highlight(data, result){
 		var link = details.Link;
 		var word = result.pop();
 
+		// TODO change this part to handle new db structure
 		// matches only the first instance, and ignores later instances
 		if(!highlighted[word] && data.innerText.match(word) == word){
 				link = word.bold().fontcolor("#BF0000").link(link);
