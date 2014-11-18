@@ -4,6 +4,12 @@ DB_VERSION = 47;
 var db;
 var upgraded = false;
 
+
+console.log("here");
+
+var dict = new rcxDict(true);
+dict.deinflect("");
+
 $.getJSON(chrome.extension.getURL('/rakutenma-master/model_ja.min.json'), function(model) {
 	var rma = new RakutenMA(model);
 	rma.featset = RakutenMA.default_featset_ja;
@@ -45,4 +51,15 @@ function startParsing(rma){
 			}
 		}
 	}
+}
+
+// takes in an array of sentences
+// outputs array of array of tokens
+function webTokenize(sentences){
+	url = "";
+	inputString = "[" + sentences.toString() + "]";
+	console.log(inputString);
+	$.post(url, {input: inputString}).done(function(data) {
+		console.log(data);
+	});
 }
