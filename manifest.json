@@ -12,6 +12,7 @@
         "rakutenma-master/rakutenma.js",
         "rakutenma-master/hanzenkaku.js",
         "tiny_segmenter-0.2.js",
+        "new_conjugator.js",
         "conjugator.js",
         "db.js",
         "popup.js",
@@ -27,6 +28,17 @@
     "json_files/utensils.json",
     "json_files/utensils-complete.json",
     "json_files/verbs.json",
-    "girl_susume.jpg"
+    "girl_susume.jpg",
+    "data/deinflect.dat",
+    "data/dict.dat",
+    "data/dict.idx",
+    "data/kanji.dat",
+    "data/names.dat",
+    "data/names.idx",
+    "data/radicals.dat"
+  ],
+  "permissions": [
+    "http://138.91.5.12/",
+    "http://localhost/"
   ]
 }

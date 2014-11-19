@@ -4,9 +4,6 @@ DB_VERSION = 47;
 var db;
 var upgraded = false;
 
-
-console.log("here");
-
 var dict = new rcxDict(true);
 dict.deinflect("");
 
@@ -30,6 +27,8 @@ $.getJSON(chrome.extension.getURL('/rakutenma-master/model_ja.min.json'), functi
 });
 
 function startParsing(rma){
+	sentences = []
+
 	howToStepImg = document.getElementsByClassName("howtoStep")[0];
 	rows = howToStepImg.children[0];
 	numberOfRows = rows.childElementCount;
@@ -46,19 +45,36 @@ function startParsing(rma){
 			for(var k=0; k < currStep.childElementCount; k++){
 				if(currStep.children[k].tagName == "P"){
 					comments = currStep.children[k];
-					parse(rma, comments);
+					// parse(rma, comments);
+					sentences.push(comments.innerText);
 				}
 			}
 		}
 	}
+
+	webTokenize(sentences);
+}
+
+function myTrim(x) {
+  return x.replace(/^\s+|\s+$/gm,'');
 }
 
 // takes in an array of sentences
 // outputs array of array of tokens
 function webTokenize(sentences){
-	url = "";
-	inputString = "[" + sentences.toString() + "]";
+	url = "http://138.91.5.12/";
+	// url = "http://localhost";
+	inputString = "[";
+	for(var i = 0; i < sentences.length; i++){
+		inputString += "\"" + myTrim(sentences[i]) + "\"";
+		if(i < sentences.length-1){
+			inputString += ", ";
+		}
+	}
+	inputString += "]";
+
 	console.log(inputString);
+
 	$.post(url, {input: inputString}).done(function(data) {
 		console.log(data);
 	});
