@@ -1,10 +1,8 @@
 //Method parse() will Tokenize, Clean and Link
-function parse(rma, data) {
+function parse(data, tokens) {
 	//Tokenize the data
 	// TODO split by commas
-
-	tokens = rma.tokenize(data.innerText);
-	tokens = filter(tokens);
+	tokens = filter(tokens.tokens);
 
 	//Query Database for matches
 	var result;
@@ -19,10 +17,7 @@ function parse(rma, data) {
 	// check verbs
 	for(var i = 0; i < tokens.length; i++){
 		if(isVerb(tokens[i])){
-			// unconjugate verb first
-			console.log(tokens[i][0]);
-			console.log(unconjugate(tokens[i][0]));
-			searchVerb(unconjugate(tokens[i][0]).word, function(verb, searchResults){
+			searchVerb(tokens[i].plain, function(verb, searchResults){
 				if(typeof searchResults != "undefined") {
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
@@ -38,19 +33,18 @@ function parse(rma, data) {
 }
 
 function isNoun(token){
-	var char = token[1][0];
-	return char == "N";
+	var tag = token.tag;
+	return tag == "noun";
 }
 
 function isVerb(token){
-	var char = token[1][0];
-	return char == "V";
+	var tag = token.tag;
+	return tag == "verb";
 }
 
 function filter(tokens){
 	result = [];
 	for(var i = 0; i < tokens.length; i++){
-		console.log(tokens[i]);
 		if(isNoun(tokens[i]) || isVerb(tokens[i])){
 			result.push(tokens[i]);
 		}
@@ -102,7 +96,7 @@ function searchUtensil(keywords, callback) {
 			if(keywords.length == 0){
 				callback(results);
 			} else {
-				getDetailsByName(keywords[keywords.length-1][0], function(searchTerm, searchResult){
+				getDetailsByName(keywords[keywords.length-1].original, function(searchTerm, searchResult){
 					keywords.pop();
 					if(typeof searchResult != "undefined"){
 						results.push(searchTerm);

@@ -7,27 +7,22 @@ var upgraded = false;
 var dict = new rcxDict(true);
 dict.deinflect("");
 
-$.getJSON(chrome.extension.getURL('/rakutenma-master/model_ja.min.json'), function(model) {
-	var rma = new RakutenMA(model);
-	rma.featset = RakutenMA.default_featset_ja;
-	rma.hash_func = RakutenMA.create_hash_func(15);
-
-	initDB(DB_VERSION, function(dbHandler, upgraded) {
-		db = dbHandler
-		if(upgraded){
-			seedData(db, function(){
-				seedNewData(db, function(){
-					startParsing(rma);
-				});
+initDB(DB_VERSION, function(dbHandler, upgraded) {
+	db = dbHandler
+	if(upgraded){
+		seedData(db, function(){
+			seedNewData(db, function(){
+				startParsing();
 			});
-		} else{
-			startParsing(rma);
-		}
-	});
+		});
+	} else{
+		startParsing();
+	}
 });
 
-function startParsing(rma){
+function startParsing(){
 	sentences = []
+	htmlSentences = []
 
 	howToStepImg = document.getElementsByClassName("howtoStep")[0];
 	rows = howToStepImg.children[0];
@@ -46,13 +41,17 @@ function startParsing(rma){
 				if(currStep.children[k].tagName == "P"){
 					comments = currStep.children[k];
 					// parse(rma, comments);
+					htmlSentences.push(comments);
 					sentences.push(comments.innerText);
 				}
 			}
 		}
 	}
-
-	webTokenize(sentences);
+	webTokenize(sentences, function(result){
+		for(var i = 0; i < result.length; i++){
+			parse(htmlSentences[i], result[i]);
+		}
+	});
 }
 
 function myTrim(x) {
@@ -61,9 +60,9 @@ function myTrim(x) {
 
 // takes in an array of sentences
 // outputs array of array of tokens
-function webTokenize(sentences){
+function webTokenize(sentences, callback){
 	url = "http://138.91.5.12/";
-	// url = "http://localhost";
+
 	inputString = "[";
 	for(var i = 0; i < sentences.length; i++){
 		inputString += "\"" + myTrim(sentences[i]) + "\"";
@@ -73,9 +72,7 @@ function webTokenize(sentences){
 	}
 	inputString += "]";
 
-	console.log(inputString);
-
 	$.post(url, {input: inputString}).done(function(data) {
-		console.log(data);
+		callback(data);
 	});
 }
