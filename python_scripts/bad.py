@@ -41,7 +41,9 @@ def parse_verbs(verbs):
         # TODO switch to ID here
         utensils_id = []
         for utensil in utensils:
-            utensils_id.append(searchForID(utensil, utensils_json))
+            utensil_id = searchForID(utensil, utensils_json)
+            if utensil_id != -1:
+                utensils_id.append(utensil_id)
 
         obj = {"verb": verb, "ids": utensils_id}
         result.append(obj)
@@ -56,7 +58,7 @@ def searchForID(utensil, json):
         if item["Name"] == utensil:
             return item["id"]
 
-    print(utensil + " not found.")
+    # print(utensil + " not found.")
     return -1
 
 def merge_results(final_result):

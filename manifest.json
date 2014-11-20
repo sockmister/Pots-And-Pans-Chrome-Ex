@@ -12,7 +12,6 @@
         "rakutenma-master/rakutenma.js",
         "rakutenma-master/hanzenkaku.js",
         "tiny_segmenter-0.2.js",
-        "new_conjugator.js",
         "conjugator.js",
         "db.js",
         "popup.js",
@@ -39,6 +38,6 @@
   ],
   "permissions": [
     "http://138.91.5.12/",
-    "http://localhost/"
+    "http://localhost:4567/"
   ]
 }

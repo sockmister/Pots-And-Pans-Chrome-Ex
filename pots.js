@@ -1,11 +1,8 @@
 // constants
-DB_VERSION = 47;
+DB_VERSION = 48;
 
 var db;
 var upgraded = false;
-
-var dict = new rcxDict(true);
-dict.deinflect("");
 
 initDB(DB_VERSION, function(dbHandler, upgraded) {
 	db = dbHandler
@@ -55,22 +52,33 @@ function startParsing(){
 }
 
 function myTrim(x) {
-  return x.replace(/^\s+|\s+$/gm,'');
+  x = x.replace(/^\s+|\s+$/gm,'');
+	x = x.replace(/\n/g, " ");
+	return x
 }
 
 // takes in an array of sentences
 // outputs array of array of tokens
 function webTokenize(sentences, callback){
 	url = "http://138.91.5.12/";
+	// url = "http://localhost:4567/";
+	//
+	// inputString = "[";
+	// for(var i = 0; i < sentences.length; i++){
+	// 	inputString += "\"" + myTrim(sentences[i]) + "\"";
+	// 	if(i < sentences.length-1){
+	// 		inputString += ", ";
+	// 	}
+	// }
+	// inputString += "]";
+	//
+	// console.log(inputString);
 
-	inputString = "[";
 	for(var i = 0; i < sentences.length; i++){
-		inputString += "\"" + myTrim(sentences[i]) + "\"";
-		if(i < sentences.length-1){
-			inputString += ", ";
-		}
+		sentences[i] = myTrim(sentences[i]);
 	}
-	inputString += "]";
+
+	inputString = JSON.stringify(sentences);
 
 	$.post(url, {input: inputString}).done(function(data) {
 		callback(data);

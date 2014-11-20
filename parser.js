@@ -120,6 +120,7 @@ function searchRelatedVerbs(verb, callback) {
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
+	console.log(result);
 	var highlighted = {};
 
 	while(result.length!=0){
