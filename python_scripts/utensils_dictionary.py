@@ -9,6 +9,7 @@ import io
 def main():
     id = 0
     JAP_IDX = 1
+    ICHIBA_IDX = 2
     HIRA_IDX = 3
     KATA_IDX = 4
     KANJI_IDX = 5
@@ -19,10 +20,17 @@ def main():
     # for crawler dictionary
     crawler_dict = []
 
-    with open('sheet1.txt', 'rb') as f:
+    with open('sheet1-2.csv', 'rb') as f:
         reader = csv.reader(f)
         reader.next()    #skip first line
         for row in reader:
+            if row[ICHIBA_IDX] != '':
+                entry = {}
+                entry['Name'] = row[ICHIBA_IDX]
+                entry['id'] = id
+                result.append(entry)
+            else:
+                continue
             if row[HIRA_IDX] != '':
                 entry = {}
                 entry['Name'] = row[HIRA_IDX]
@@ -45,18 +53,19 @@ def main():
                     entry['Name'] = token
                     entry['id'] = id
                     result.append(entry)
-            id += 1
 
             #  for crawler dictionary
             entry = []
-            if row[KANJI_IDX] != '':
-                entry.append(row[KANJI_IDX])
+            if row[ICHIBA_IDX] != '':
+                entry.append(row[ICHIBA_IDX])
                 entry.append(id)
                 crawler_dict.append(entry)
             elif row[JAP_IDX] != '':
                 entry.append(row[JAP_IDX])
                 entry.append(id)
                 crawler_dict.append(entry)
+
+            id += 1
 
     # with io.open('out.json', 'w', encoding='utf8') as outfile:
     #     json_string = json.dumps(result, ensure_ascii=False).decode('utf8')
