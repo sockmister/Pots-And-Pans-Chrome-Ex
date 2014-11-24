@@ -1,16 +1,14 @@
 // constants
-DB_VERSION = 48;
+DB_VERSION = 63;
 
 var db;
 var upgraded = false;
 
 initDB(DB_VERSION, function(dbHandler, upgraded) {
-	db = dbHandler
+	db = dbHandler;
 	if(upgraded){
-		seedData(db, function(){
-			seedNewData(db, function(){
-				startParsing();
-			});
+		seedNewData(db, function(){
+			startParsing();
 		});
 	} else{
 		startParsing();

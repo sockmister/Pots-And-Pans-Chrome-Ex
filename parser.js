@@ -1,8 +1,19 @@
 //Method parse() will Tokenize, Clean and Link
 function parse(data, tokens) {
+	// also use tiny segmenter
+	var segmenter = new TinySegmenter();
+	var segs = segmenter.segment(data.innerText);
+	modSegs = []
+	for(var i = 0; i < segs.length; i++){
+		modSegs.push({original: segs[i]});
+	}
+
+	var highlighted = {};
+
 	//Tokenize the data
 	// TODO split by commas
 	tokens = filter(tokens.tokens);
+	tokens = unionByOriginal(modSegs, tokens);
 
 	//Query Database for matches
 	var result;
@@ -11,7 +22,7 @@ function parse(data, tokens) {
 	// check noun utensil
 	searchUtensil(tokens, function(searchResults) {
 		result = searchResults;
-		highlight(data, result);
+		highlight(data, result, highlighted);
 	});
 
 	// check verbs
@@ -23,13 +34,36 @@ function parse(data, tokens) {
 					// TODO how to decide what items to use?
 					getDetailsByID(searchResults[0], function(id, details){
 						if(typeof details != "undefined") {
-							highlight(data, [verb, details]);
+							// TODO
+							// highlight(data, [verb, details]);
 						}
 					});
 				}
 			});
 		}
 	}
+}
+
+function unionByOriginal(arr1, arr2){
+	result = arr1;
+
+	for(var i = 0; i < arr2.length; i++){
+		if(!wordOriginalExists(arr2[i].original, arr1)){
+			arr1.push(arr2[i]);
+		}
+	}
+
+	return result;
+}
+
+function wordOriginalExists(word, arr){
+	for(var i = 0; i < arr.length; i++){
+		if(arr[i].original == word){
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function isNoun(token){
@@ -96,10 +130,10 @@ function searchUtensil(keywords, callback) {
 			if(keywords.length == 0){
 				callback(results);
 			} else {
-				getDetailsByName(keywords[keywords.length-1].original, function(searchTerm, searchResult){
-					keywords.pop();
+				getDetailsByName2(keywords[keywords.length-1].original, function(searchTerm, searchResult){
+					word = keywords.pop();
 					if(typeof searchResult != "undefined"){
-						results.push(searchTerm);
+						results.push(word.original);
 						results.push(searchResult);
 					}
 					recur(keywords, callback);
@@ -120,9 +154,10 @@ function searchRelatedVerbs(verb, callback) {
 
 //Method to hyperlink the found kitchen Utensils
 function highlight(data, result){
-	console.log(result);
 	var highlighted = {};
+	var highlightIndexes = []
 
+	// console.log(result);
 	while(result.length!=0){
 		if(typeof result == "undefined"){
 			return;
@@ -131,36 +166,48 @@ function highlight(data, result){
 		var link = details.Link;
 		var word = result.pop();
 
+		var start = data.innerText.indexOf(word);
+		var end = start + word.length-1;
+
 		// TODO change this part to handle new db structure
-		// matches only the first instance, and ignores later instances
-		if(!highlighted[word] && data.innerText.match(word) == word){
+		if(!highlighted[word] && data.innerText.match(word) == word && !indexIntersects(highlightIndexes, start, end)){
 				link = word.bold().fontcolor("#BF0000").link(link);
 				outerDiv = document.createElement('div');
 				innerDiv = document.createElement('span');
 				outerDiv.appendChild(innerDiv);
 
-				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details);
+				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[0]);
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 
 				data.innerHTML = data.innerHTML.replace(word, outerDiv.innerHTML);
 		}
 		highlighted[word] = true;
+		highlightIndexes.push({start: start, end: end});
 	}
 
 	setPopupFuncElem(data);
 }
 
+function indexIntersects(highlightIndex, start, end){
+	for(var i = 0; i < highlightIndex.length; i++){
+		if(highlightIndex[i].start <= end && start <= highlightIndex[i].end){
+			return true;
+		}
+	}
+
+	return false;
+}
+
 // ProductName, Link, ImageURL, Price
 function getPopupHTMLTemplate(name, details){
 	girlSusumeLink = chrome.extension.getURL("girl_susume.jpg");
-
-	return "<div class=\"popup_div\"><p class=\"itemHeader\">" + details.ProductName + "</p>\
+	return "<div class=\"popup_div\"><p class=\"itemHeader\">" + details.item_name + "</p>\
 	<div class=\"picture_content\">\
 		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
-		<a href=\"" + details.Link + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.ImageURL + "\"></img></a>\
+		<a href=\"" + details.url + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.med_image_urls[0].imageUrl + "\"></img></a>\
 		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
-		<p class=\"productPrice\">価格"+details.Price+"</p>\
+		<p class=\"productPrice\">価格"+details.price+"</p>\
 		<img class=\"girlSusume\" src=\"" +girlSusumeLink+ "\"></img>\
 	</div>\
 	</div>";

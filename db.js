@@ -8,19 +8,14 @@ function initDB(version, callback){
     console.log("openDatabase(): running onupgradeneeded");
     var thisDB = e.target.result;
 
-    if(!thisDB.objectStoreNames.contains("utensils")) {
-      // deprecated
-      objectStore = thisDB.createObjectStore("utensils", {keyPath: "Name"});
-      objectStore.createIndex("Name", "Name", {unique: true});
-    }
     if(!thisDB.objectStoreNames.contains("utensilsStore")) {
       // Utensil: Japanese to ID
-      objectStore = thisDB.createObjectStore("utensilsStore", {keyPath: "Name"});
-      objectStore.createIndex("Name", "Name", {unique: true});
+      objectStore = thisDB.createObjectStore("utensilsStore", {keyPath: "serial"});
+      objectStore.createIndex("Name", "Name", {unique: false});
     }
-    if(!thisDB.objectStoreNames.contains("utensilsDetails")) {
+    if(!thisDB.objectStoreNames.contains("links")) {
       // Details: ID to link details
-      objectStore = thisDB.createObjectStore("utensilsDetails", {keyPath: "ID"});
+      objectStore = thisDB.createObjectStore("links", {keyPath: "ID"});
       objectStore.createIndex("ID", "ID", {unique: true});
     }
     if(!thisDB.objectStoreNames.contains("verbsDictionary")) {
@@ -59,11 +54,10 @@ function seedNewData(dbHandler, callback) {
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function(data){
     if(xhr.readyState==4 && xhr.status==200){
-      // insertMultipleEntries(dbHandler, JSON.parse(xhr.response), callback);
-      insertLinkDetails(dbHandler, JSON.parse(xhr.response), callback);
+      insertEntries(dbHandler, "links", JSON.parse(xhr.response), callback);
     }
   }; // Implemented elsewhere.
-  xhr.open("GET", chrome.extension.getURL("/json_files/newSeed.json"), true);
+  xhr.open("GET", chrome.extension.getURL("/json_files/links.json"), true);
   xhr.send();
 
   var xhrDict = new XMLHttpRequest();
@@ -130,6 +124,7 @@ function insertMultipleEntries(db, array, callback){
 function insertEntries(db, storeName, array, callback){
   var transaction = db.transaction([storeName], "readwrite");
   transaction.oncomplete = function(event) {
+    console.log("insertEntries() success.");
     callback();
   };
   transaction.onerror = function(event) {
@@ -138,6 +133,7 @@ function insertEntries(db, storeName, array, callback){
 
   var objectStore = transaction.objectStore(storeName);
   for (var i in array){
+    console.log(array[i]);
     var request = objectStore.add(array[i]);
   }
 
@@ -207,6 +203,44 @@ function getDetailsByName(name, callback) {
   }
 }
 
+function getDetailsByName2(name, callback){
+
+  //
+  // // TODO debug
+  // var request = objectStore.get("あみじゃくし106172");
+  // request.onerror = function(event) {
+  // };
+  //
+  // request.onsuccess = function(event) {
+  //   console.log(request.result);
+  //   if(typeof request.result == "undefined"){
+  //     callback(name, request.result);
+  //   } else {
+  //     // find details
+  //     getDetailsByID(request.result.id, callback);
+  //   }
+  // }
+  var transaction = db.transaction(["utensilsStore"], "readonly");
+  var objectStore = transaction.objectStore("utensilsStore");
+
+  var index = objectStore.index("Name");
+  index.get(name).onsuccess = function(event) {
+    if(typeof(event.target.result) == "undefined"){
+      callback(event.target.result);
+    }
+    else {
+      getDetailsByID(event.target.result.id, callback);
+    }
+  };
+  index.openCursor().onsuccess = function(event) {
+    // var cursor = event.target.result;
+    // if (cursor) {
+    //   console.log("name: " + cursor.key + ", : " + cursor.value.id + ", name: " + cursor.value.Name);
+    //   // cursor.continue();
+    // }
+  };
+}
+
 function searchVerb(verb, callback){
   var transaction = db.transaction(["verbsDictionary"], "readonly");
   var objectStore = transaction.objectStore("verbsDictionary");
@@ -228,10 +262,9 @@ function wordExist(word, callback){
 }
 
 function getDetailsByID(id, callback) {
-  var transaction = db.transaction(["utensilsDetails"], "readonly");
-  var objectStore = transaction.objectStore("utensilsDetails");
-  id = parseInt(id);
-  var request = objectStore.get(4);
+  var transaction = db.transaction(["links"], "readonly");
+  var objectStore = transaction.objectStore("links");
+  var request = objectStore.get(id.toString());
   request.onerror = function(event) {
   };
 

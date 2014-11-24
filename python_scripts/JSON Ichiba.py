@@ -63,7 +63,7 @@ def search_oneitem(searchterm, searchterm_id):
 
     search_link = "http://search.rakuten.co.jp/search/mall/%s/" %(searchterm)
 
-    oneitem_json = dict(Name= searchterm, ID= searchterm_id, Details= dict(search_link= search_link, links= links))
+    oneitem_json = dict(Serial = searchterm+searchterm_id, Name= searchterm, ID= searchterm_id, Details= dict(search_link= search_link, links= links))
     return oneitem_json
 
 
