@@ -3,6 +3,7 @@ function parse(data, tokens) {
 	// also use tiny segmenter
 	var segmenter = new TinySegmenter();
 	var segs = segmenter.segment(data.innerText);
+	segs = cleaner(segs);
 	modSegs = []
 	for(var i = 0; i < segs.length; i++){
 		modSegs.push({original: segs[i]});
@@ -11,19 +12,19 @@ function parse(data, tokens) {
 	var highlighted = {};
 
 	//Tokenize the data
-	// TODO split by commas
+	// TODO split by commas?
 	tokens = filter(tokens.tokens);
-	tokens = unionByOriginal(modSegs, tokens);
+	tokens = unionByOriginal(tokens, modSegs);
 
 	//Query Database for matches
 	var result;
-	// TODO parse: check noun utensil, check related verbs, check related nouns
 
 	// check noun utensil
 	searchUtensil(tokens, function(searchResults) {
 		result = searchResults;
-		highlight(data, result, highlighted);
+		highlight(data, result);
 	});
+
 
 	// check verbs
 	for(var i = 0; i < tokens.length; i++){
@@ -32,10 +33,9 @@ function parse(data, tokens) {
 				if(typeof searchResults != "undefined") {
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
-					getDetailsByID(searchResults[0], function(id, details){
-						if(typeof details != "undefined") {
-							// TODO
-							// highlight(data, [verb, details]);
+					getAllIDs(verb, searchResults, function(results){
+						for(var i = 0; i < results.length; i++){
+							highlight(data, results);
 						}
 					});
 				}
@@ -144,6 +144,26 @@ function searchUtensil(keywords, callback) {
 		recur(keywords, callback);
 }
 
+function getAllIDs(verb, ids, callback){
+	var results = [];
+
+	function recur(ids, callback){
+		if(ids.length == 0){
+			callback(results);
+		} else{
+			getDetailsByID(ids[ids.length-1], function(id, result){
+				word = ids.pop();
+				if(typeof result != "undefined"){
+					results.push(verb);
+					results.push(result);
+				}
+				recur(ids, callback);
+			});
+		}
+	}
+	recur(ids, callback);
+}
+
 function searchRelatedVerbs(verb, callback) {
 	var results = [];
 	// deconjugate / deinflect verb first
@@ -162,6 +182,7 @@ function highlight(data, result){
 		if(typeof result == "undefined"){
 			return;
 		}
+		console.log(result);
 		var details = result.pop();
 		var link = details.Link;
 		var word = result.pop();
