@@ -12,7 +12,6 @@ function parse(data, tokens) {
 	var highlighted = {};
 
 	//Tokenize the data
-	// TODO split by commas?
 	tokens = filter(tokens.tokens);
 	tokens = unionByOriginal(tokens, modSegs);
 
@@ -29,11 +28,12 @@ function parse(data, tokens) {
 	// check verbs
 	for(var i = 0; i < tokens.length; i++){
 		if(isVerb(tokens[i])){
-			searchVerb(tokens[i].plain, function(verb, searchResults){
+			console.log(tokens[i]);
+			searchVerb(tokens[i].original, tokens[i].plain, function(original, verb, searchResults){
 				if(typeof searchResults != "undefined") {
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
-					getAllIDs(verb, searchResults, function(results){
+					getAllIDs(original, searchResults, function(results){
 						for(var i = 0; i < results.length; i++){
 							highlight(data, results);
 						}
@@ -177,12 +177,13 @@ function highlight(data, result){
 	var highlighted = {};
 	var highlightIndexes = []
 
+	console.log(result);
+
 	// console.log(result);
 	while(result.length!=0){
 		if(typeof result == "undefined"){
 			return;
 		}
-		console.log(result);
 		var details = result.pop();
 		var link = details.Link;
 		var word = result.pop();

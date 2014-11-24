@@ -241,7 +241,7 @@ function getDetailsByName2(name, callback){
   };
 }
 
-function searchVerb(verb, callback){
+function searchVerb(original, verb, callback){
   var transaction = db.transaction(["verbsDictionary"], "readonly");
   var objectStore = transaction.objectStore("verbsDictionary");
   var request = objectStore.get(verb);
@@ -250,9 +250,9 @@ function searchVerb(verb, callback){
 
   request.onsuccess = function(event) {
     if(typeof request.result == "undefined"){
-      callback(verb, request.result);
+      callback(original, verb, request.result);
     } else {
-      callback(verb, request.result.ids);
+      callback(original, verb, request.result.ids);
     }
   }
 }
