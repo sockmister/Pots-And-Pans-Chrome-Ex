@@ -16,10 +16,6 @@ function parse(data, tokens) {
 	tokens = filter(tokens.tokens);
 	tokens = unionByOriginal(tokens, modSegs);
 
-	for(var i = 0; i < tokens.length; i++){
-		console.log(tokens[i]);
-	}
-
 	//Query Database for matches
 	var result;
 
@@ -193,7 +189,9 @@ function highlight(data, result, highlighted, highlightIndexes){
 				innerDiv = document.createElement('span');
 				outerDiv.appendChild(innerDiv);
 
-				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[0]);
+
+				var rnd = Math.floor((Math.random() * details.links.length
+				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[rnd]);
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 

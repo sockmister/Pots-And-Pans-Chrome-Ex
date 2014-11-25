@@ -51,7 +51,7 @@ def search_oneitem(searchterm, searchterm_id):
     data = json.loads(data)
 
     print(len(data['Items']))
-    min_index = min(len(data['Items']), 2)
+    min_index = min(len(data['Items']), 30)
     links = [dict(item_name=data['Items'][i]['Item']['itemName'].encode('utf8'),
                   price=data['Items'][i]['Item']['itemPrice'],
                   url=data['Items'][i]['Item']['itemUrl'],
