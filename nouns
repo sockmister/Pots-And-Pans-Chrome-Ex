@@ -2,3 +2,15 @@
 水気を切る
 水分を切る
 千切り
+
+General Algorithm:
+if lookAround() is true
+	if toHighlight is true
+		highlight with lookAroundSet
+	else
+		do nothing
+else
+	highlight with normalSet
+
+Data structure:
+word(verb/noun), toHighlight, lookAroundTerms, normalSet, lookAroundSet
