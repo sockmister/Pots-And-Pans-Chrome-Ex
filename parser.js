@@ -10,10 +10,15 @@ function parse(data, tokens) {
 	}
 
 	var highlighted = {};
+	var highlightedIndexes = [];
 
 	//Tokenize the data
 	tokens = filter(tokens.tokens);
 	tokens = unionByOriginal(tokens, modSegs);
+
+	for(var i = 0; i < tokens.length; i++){
+		console.log(tokens[i]);
+	}
 
 	//Query Database for matches
 	var result;
@@ -21,21 +26,21 @@ function parse(data, tokens) {
 	// check noun utensil
 	searchUtensil(tokens, function(searchResults) {
 		result = searchResults;
-		highlight(data, result);
+		highlight(data, result, highlighted, highlightedIndexes);
 	});
 
 
 	// check verbs
 	for(var i = 0; i < tokens.length; i++){
 		if(isVerb(tokens[i])){
-			console.log(tokens[i]);
 			searchVerb(tokens[i].original, tokens[i].plain, function(original, verb, searchResults){
 				if(typeof searchResults != "undefined") {
+					console.log(verb);
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
 					getAllIDs(original, searchResults, function(results){
 						for(var i = 0; i < results.length; i++){
-							highlight(data, results);
+							highlight(data, results, highlighted, highlightedIndexes);
 						}
 					});
 				}
@@ -164,20 +169,10 @@ function getAllIDs(verb, ids, callback){
 	recur(ids, callback);
 }
 
-function searchRelatedVerbs(verb, callback) {
-	var results = [];
-	// deconjugate / deinflect verb first
-	verb = deconjugate(verb);
-	console.log(verb);
-	searchVerb(verb, callback);
-}
-
 //Method to hyperlink the found kitchen Utensils
-function highlight(data, result){
-	var highlighted = {};
-	var highlightIndexes = []
-
-	console.log(result);
+function highlight(data, result, highlighted, highlightIndexes){
+	// var highlighted = {};
+	// var highlightIndexes = []
 
 	// console.log(result);
 	while(result.length!=0){
