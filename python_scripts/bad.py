@@ -37,6 +37,7 @@ def parse_verbs(verbs):
     for verb in verbs:
         tokens = verb.split(":")
         verb = tokens[0]
+        print(verb)
         utensils = tokens[1].split(",")
         # TODO switch to ID here
         utensils_id = []
