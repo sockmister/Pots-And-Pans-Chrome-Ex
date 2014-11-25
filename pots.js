@@ -15,6 +15,9 @@ initDB(DB_VERSION, function(dbHandler, upgraded) {
 	}
 });
 
+// add font awesome to header
+$('head').append("<link href=\"//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\" rel=\"stylesheet\">");
+
 function startParsing(){
 	sentences = []
 	htmlSentences = []
