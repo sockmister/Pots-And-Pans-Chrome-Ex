@@ -31,7 +31,6 @@ function parse(data, tokens) {
 		if(isVerb(tokens[i])){
 			searchVerb(tokens[i].original, tokens[i].plain, function(original, verb, searchResults){
 				if(typeof searchResults != "undefined") {
-					console.log(verb);
 					// retrieve the possible utensils
 					// TODO how to decide what items to use?
 					getAllIDs(original, searchResults, function(results){
@@ -190,7 +189,7 @@ function highlight(data, result, highlighted, highlightIndexes){
 				outerDiv.appendChild(innerDiv);
 
 
-				var rnd = Math.floor((Math.random() * details.links.length
+				var rnd = Math.floor((Math.random() * details.links.length));
 				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[rnd]);
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
