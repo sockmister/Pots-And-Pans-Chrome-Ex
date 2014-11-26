@@ -6,7 +6,7 @@ function parse(data, tokens) {
 	segs = cleaner(segs);
 	modSegs = []
 	for(var i = 0; i < segs.length; i++){
-		modSegs.push({original: segs[i]});
+		modSegs.push({original: segs[i], plain: segs[i]});
 	}
 
 	var highlighted = {};
@@ -25,23 +25,81 @@ function parse(data, tokens) {
 		highlight(data, result, highlighted, highlightedIndexes);
 	});
 
-
-	// check verbs
 	for(var i = 0; i < tokens.length; i++){
-		if(isVerb(tokens[i])){
-			searchVerb(tokens[i].original, tokens[i].plain, function(original, verb, searchResults){
-				if(typeof searchResults != "undefined") {
-					// retrieve the possible utensils
-					// TODO how to decide what items to use?
-					getAllIDs(original, searchResults, function(results){
-						for(var i = 0; i < results.length; i++){
+		getWordDetails(i, tokens[i], function(index, original, search, searchResult) {
+			if(typeof searchResult != "undefined") {
+				if(lookAround(index, tokens, searchResult.lookAroundTerms)) {
+					// search by ids
+					// highlight with lookAroundSet
+					if(searchResult.toHighlight){
+						getAllIDs(original, searchResult.ids, function(results){
+							for(var j = 0; j < results.length; j++){
+								highlight(data, results, highlighted, highlightedIndexes);
+							}
+						});
+					}
+				}
+				else {
+					// search by ids
+					// highlight with normalSet
+					//getDetailsByID()
+					getAllIDs(original, searchResult.ids, function(results){
+						for(var j = 0; j < results.length; j++){
 							highlight(data, results, highlighted, highlightedIndexes);
 						}
 					});
 				}
-			});
+			}
+		});
+	}
+
+	// check verbs
+	// for(var i = 0; i < tokens.length; i++){
+	// 	if(isVerb(tokens[i])){
+	// 		searchVerb(tokens[i].original, tokens[i].plain, function(original, verb, searchResults){
+	// 			if(typeof searchResults != "undefined") {
+	// 				// retrieve the possible utensils
+	// 				// TODO how to decide what items to use?
+	// 				getAllIDs(original, searchResults, function(results){
+	// 					for(var i = 0; i < results.length; i++){
+	// 						highlight(data, results, highlighted, highlightedIndexes);
+	// 					}
+	// 				});
+	// 			}
+	// 		});
+	// 	}
+	// }
+}
+
+function lookAround(index, tokens, lookAroundTerms) {
+	var lookAroundDist = 1;
+	var length = tokens.length;
+	// var foundLookAround = false;
+	// convert to a more general algorithm in future
+
+	if(index+lookAroundDist < length){
+		if(existIn(tokens[index+lookAroundDist].plain, lookAroundTerms)){
+			return true;
 		}
 	}
+
+	if(index-lookAroundDist >= 0) {
+		if(existIn(tokens[index-lookAroundDist].plain, lookAroundTerms)){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function existIn(value, arr) {
+	for(var i = 0; i < arr.length; i++){
+		if(arr[i] == value){
+			return true;
+		}
+	}
+
+	return false;
 }
 
 function unionByOriginal(arr1, arr2){
@@ -181,7 +239,6 @@ function highlight(data, result, highlighted, highlightIndexes){
 		var start = data.innerText.indexOf(word);
 		var end = start + word.length-1;
 
-		// TODO change this part to handle new db structure
 		if(!highlighted[word] && data.innerText.match(word) == word && !indexIntersects(highlightIndexes, start, end)){
 				link = word.bold().fontcolor("#BF0000").link(link);
 				outerDiv = document.createElement('div');

@@ -1,0 +1,176 @@
+[
+    {
+        "verb": "盛り付ける",
+        "ids": [
+            180
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "ざく切りにする",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "焼く",
+        "ids": [
+            2,
+            111
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "ゆでる",
+        "ids": [
+            18
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "混ぜる",
+        "ids": [
+            8,
+            172
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "刻む",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "ひっくり返す",
+        "ids": [
+            183
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "伸ばす",
+        "ids": [
+            96
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "切っておく",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "炒める",
+        "ids": [
+            2
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "型抜きをする",
+        "ids": [
+            177
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "塗る",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "切る",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+            "水気",
+            "水分"
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "茹でる",
+        "ids": [
+            18
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "千切りにする",
+        "ids": [
+            5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "千切り",
+        "ids": [
+          5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    },
+    {
+        "verb": "みじん切り",
+        "ids": [
+          5
+        ],
+        "lookAroundTerms": [
+        ],
+        "toHighlight": false,
+        "lookAroundSet": []
+    }
+]

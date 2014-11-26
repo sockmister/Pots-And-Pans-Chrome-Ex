@@ -1,5 +1,5 @@
 // constants
-DB_VERSION = 63;
+DB_VERSION = 67;
 
 var db;
 var upgraded = false;
@@ -17,6 +17,9 @@ initDB(DB_VERSION, function(dbHandler, upgraded) {
 
 // add font awesome to header
 $('head').append("<link href=\"//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css\" rel=\"stylesheet\">");
+$('head').append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css\">");
+$('head').append("<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css\">");
+$('head').append("<script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js\"></script>");
 
 function startParsing(){
 	sentences = []

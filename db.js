@@ -23,6 +23,11 @@ function initDB(version, callback){
       objectStore = thisDB.createObjectStore("verbsDictionary", {keyPath: "verb"});
       objectStore.createIndex("verb", "verb", {unique: true});
     }
+    if(!thisDB.objectStoreNames.contains("wordDictionary")) {
+      // Verbs: verb to array of ids
+      objectStore = thisDB.createObjectStore("wordDictionary", {keyPath: "verb"});
+      objectStore.createIndex("verb", "verb", {unique: true});
+    }
 
     // callback(thisDB, true);
   }
@@ -77,6 +82,15 @@ function seedNewData(dbHandler, callback) {
   };
   xhrVerbs.open("GET", chrome.extension.getURL("/json_files/verbs.json"), true);
   xhrVerbs.send();
+
+  var xhrWords = new XMLHttpRequest();
+  xhrWords.onreadystatechange = function(data) {
+    if(xhrWords.readyState==4 && xhrWords.status==200){
+      insertEntries(dbHandler, "wordDictionary", JSON.parse(xhrWords.response), callback);
+    }
+  };
+  xhrWords.open("GET", chrome.extension.getURL("/json_files/verbs2.json"), true);
+  xhrWords.send();
 }
 
 function insertLinkDetails(db, array, callback) {
@@ -273,6 +287,22 @@ function getDetailsByID(id, callback) {
       callback(id, request.result);
     } else {
       callback(id, request.result.Details);
+    }
+  }
+}
+
+function getWordDetails(index, token, callback) {
+  var transaction = db.transaction(["wordDictionary"], "readonly");
+  var objectStore = transaction.objectStore("wordDictionary");
+  var request = objectStore.get(token.plain);
+  request.onerror = function(event) {
+  };
+
+  request.onsuccess = function(event) {
+    if(typeof request.result == "undefined"){
+      callback(index, token.original, token.plain, request.result);
+    } else {
+      callback(index, token.original, token.plain, request.result);
     }
   }
 }
