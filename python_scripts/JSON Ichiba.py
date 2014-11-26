@@ -42,8 +42,10 @@ def search_oneitem(searchterm, searchterm_id):
     url = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20140222'
 
     #these are "get parameters"
+    genreId = 558944
     options = {'format': 'json', 'keyword': searchterm, 'applicationId': app_id, 'formatversion': 2,
-       'elements': 'itemName,itemPrice,itemUrl,imageFlag,smallImageUrls,mediumImageUrls,availability'}
+       'elements': 'itemName,itemPrice,itemUrl,imageFlag,smallImageUrls,mediumImageUrls,availability',
+       'genreId': genreId}
     print("searching " + searchterm)
     data = requests.get(url, params=options)
     data = data.text
