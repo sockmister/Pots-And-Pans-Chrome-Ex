@@ -9,8 +9,6 @@
       "css": ["popup.css"],
       "js": [
         "jquery-1.11.1.min.js",
-        "rakutenma-master/rakutenma.js",
-        "rakutenma-master/hanzenkaku.js",
         "tiny_segmenter-0.2.js",
         "conjugator.js",
         "db.js",
@@ -21,7 +19,6 @@
     }
   ],
   "web_accessible_resources": [
-    "rakutenma-master/model_ja.min.json",
     "json_files/seed.json",
     "json_files/newSeed.json",
     "json_files/utensils.json",
