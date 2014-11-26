@@ -1,4 +1,4 @@
-.picture_content {
+.container {
   /*line-height: 150px;*/
   display: inline-block;
   width: 100%;
@@ -23,6 +23,18 @@
   vertical-align: middle;
   line-height: normal;
   float: left;
+}
+
+.fa-chevron-left{
+  position: absolute;
+  top: 110px;
+  left: 25px;
+}
+
+.fa-chevron-right{
+  position: absolute;
+  top: 110px;
+  left: 285px;
 }
 
 .productPrice {

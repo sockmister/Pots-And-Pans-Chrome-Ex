@@ -239,25 +239,34 @@ function highlight(data, result, highlighted, highlightIndexes){
 		var start = data.innerText.indexOf(word);
 		var end = start + word.length-1;
 
+		// add to global data
+		var rnd = Math.floor(Math.random()*10000000);
+		var startRnd = Math.floor((Math.random() * details.links.length));
+		var theID = "word"+rnd.toString();
+		globalData[theID] = details;
+		globalIndex[theID] = startRnd;
+
 		if(!highlighted[word] && data.innerText.match(word) == word && !indexIntersects(highlightIndexes, start, end)){
 				link = word.bold().fontcolor("#BF0000").link(link);
 				outerDiv = document.createElement('div');
 				innerDiv = document.createElement('span');
 				outerDiv.appendChild(innerDiv);
 
-
-				var rnd = Math.floor((Math.random() * details.links.length));
-				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[rnd]);
+				innerDiv.innerHTML = link + getPopupHTMLTemplate(word, details.links[startRnd], theID);
 				innerDiv.setAttribute("class", "popup");
 				innerDiv.setAttribute("id", "popup" + word);
 
 				data.innerHTML = data.innerHTML.replace(word, outerDiv.innerHTML);
+				setArrow(data, theID);
 		}
 		highlighted[word] = true;
 		highlightIndexes.push({start: start, end: end});
+
+
 	}
 
 	setPopupFuncElem(data);
+
 }
 
 function indexIntersects(highlightIndex, start, end){
@@ -271,13 +280,21 @@ function indexIntersects(highlightIndex, start, end){
 }
 
 // ProductName, Link, ImageURL, Price
-function getPopupHTMLTemplate(name, details){
+function getPopupHTMLTemplate(name, details, theID){
 	girlSusumeLink = chrome.extension.getURL("girl_susume.jpg");
-	return "<div class=\"popup_div\"><p class=\"itemHeader\">" + details.item_name + "</p>\
-	<div class=\"picture_content\">\
-		<!-- <i class=\"chevron fa fa-chevron-left fa-2x\"></i> -->\
-		<a href=\"" + details.url + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.med_image_urls[0].imageUrl + "\"></img></a>\
-		<!-- <i class=\"chevron fa fa-2x fa-chevron-right\"></i> -->\
+
+	return "<div id=\""
+	+theID+
+	"\" class=\"popup_div\">\
+	<p class=\"itemHeader\">" + details.item_name + "</p>\
+	<div class=\"container\">\
+		<a href=\"#\" class=\"left-link\">\
+		<i class=\"chevron fa fa-chevron-left fa-2x\"></i>\
+		</a>\
+		<a class=\"productLink\" href=\"" + details.url + "\" target=\"_blank\"><img class=\"product_image\" src=\"" + details.med_image_urls[0].imageUrl + "\"></img></a>\
+		<a href=\"#\" class=\"right-link\">\
+		<i class=\"chevron fa fa-2x fa-chevron-right\"></i>\
+		</a>\
 		<p class=\"productPrice\">価格"+details.price+"</p>\
 		<img class=\"girlSusume\" src=\"" +girlSusumeLink+ "\"></img>\
 	</div>\
